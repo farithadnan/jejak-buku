@@ -53,7 +53,11 @@ backend/
    ```
 4. Run database migrations:
    ```bash
-   # (Refer to Drizzle documentation or provided scripts)
+   # Generate Migration
+   npx drizzle-kit generate
+
+   # Apply Migration
+   npx drizzle-kit migrate
    ```
  5. Start the backend (development):
     ```bash
@@ -66,12 +70,7 @@ backend/
 - `npm run build` — Build the TypeScript project
 - `npm run migrate` — Run database migrations
 
-## Contributing
-Contributions are welcome! Please open issues or submit pull requests for improvements and bug fixes.
-
----
-
-*This monorepo will include an Angular frontend in the future. Stay tuned!*
+> *This monorepo will include an Angular frontend in the future. Stay tuned!*
 
 ## License
 This project is licensed under the MIT License.
