@@ -1,5 +1,11 @@
 # Jejak Buku
 
+<center>
+
+![cat-reading-book](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWhkaGJnZjI4OTBjM3hzeHhwNW41azMzdno2Z2ltamhlbWRpZWZnbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/NFA61GS9qKZ68/giphy.gif)
+
+</center>
+
 Jejak Buku is a project designed to help users track, manage, and explore books. It provides a backend system for storing book data, managing migrations, and interacting with a database using modern TypeScript and Drizzle ORM tools.
 
 > **Note:** The backend is currently under development. In the future, an Angular frontend will be added to this monorepo.
