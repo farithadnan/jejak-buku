@@ -1,19 +1,20 @@
 {
-  "name": "backend",
+  "name": "jejak-buku-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple book tracking application",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Farith Adnan",
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^12.2.0",
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
