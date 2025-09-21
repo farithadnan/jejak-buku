@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "generate:migration": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Farith Adnan",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "better-sqlite3": "^12.2.0",
     "dotenv": "^17.2.2",
