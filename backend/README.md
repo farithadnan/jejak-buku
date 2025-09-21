@@ -49,6 +49,11 @@ backend/
 5. **Start developing**
    - Add your backend logic in `src/index.ts`.
 
+6. **Run Backend**
+   ```sh
+   npm run dev
+   ```
+
 ## Notes
 
 - **Keep the `drizzle/` folder in git** (do not add to `.gitignore`).
