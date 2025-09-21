@@ -1,35 +1,21 @@
-import 'dotenv/config';
+import path from 'path';
+import dotenv from 'dotenv';
 import express from 'express';
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { books } from './db/schema';
+
+import userRoutes from './routes/userRoutes';
+import bookRoutes from './routes/bookRoutes';
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+const APP_URL = process.env.APP_URL || `http://localhost`;
+
 app.use(express.json());
 
-// DB connection
-const sqlite = new Database(process.env.DB_FILE_NAME!);
-const db = drizzle(sqlite);
+app.use("/api/users", userRoutes);
+app.use("/api/books", bookRoutes);
 
-// test endpoint
-app.get("/", (req, res) => {
-  res.send("Jejak Buku Backend is running!");
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${APP_URL}:${PORT}`);
 });
-
-// List books
-app.get("/books", (req, res) => {
-  const allBooks = db.select().from(books).all();
-  res.json(allBooks);
-});
-
-// Add book
-app.post("/books", (req, res) => {
-  const { title, author } = req.body;
-  db.insert(books).values({ title, author }).run();
-  res.json({ message: "Book added" });
-});
-
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-});
-
