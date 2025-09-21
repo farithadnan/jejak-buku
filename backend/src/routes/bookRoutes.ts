@@ -11,7 +11,7 @@ import { validateBody, validateParams, validateQuery } from '../middleware/zodVa
 
 const router = express.Router();
 
-// Validation
+// Validation for request body
 export const bookSchema = z.object({
   title: z.string().min(1, "Title is required"),
   author: z.string().min(1, "Author is required"),
