@@ -12,4 +12,5 @@ export const books = sqliteTable("books", {
   status: text("status").notNull().default("not started"),
   rating: integer("rating"),
   notes: text("notes"),
+  userId: integer("user_id").references(() => users.id),
 });
