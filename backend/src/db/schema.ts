@@ -9,7 +9,9 @@ export const books = sqliteTable("books", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   author: text("author").notNull(),
-  status: text("status").notNull().default("not started"),
+  status: text("status", { enum: ["planned", "reading", "completed"] })
+    .notNull()
+    .default("planned"),
   rating: integer("rating"),
   notes: text("notes"),
   userId: integer("user_id").references(() => users.id),
