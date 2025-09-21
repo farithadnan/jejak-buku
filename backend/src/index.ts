@@ -19,3 +19,9 @@ app.use("/api/books", bookRoutes);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${APP_URL}:${PORT}`);
 });
+
+// Global error handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err);
+  res.status(500).json({ message: "Internal Server Error", error: err?.message });
+});
