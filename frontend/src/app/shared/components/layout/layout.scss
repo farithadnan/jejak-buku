@@ -1,19 +1,20 @@
 /* Remove sidebar and menu styles, focus on minimalist header */
 
 .logo-text {
-  white-space: nowrap;
-  overflow: hidden;
-  opacity: 1;
-  transition: opacity 0.2s ease;
   font-size: 1.25rem;
   font-weight: bold;
   color: #2563eb;
   margin-left: 0.5rem;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 header {
@@ -30,6 +31,7 @@ header {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .user-name-btn {
@@ -90,18 +92,24 @@ footer {
   font-size: 0.875rem;
   color: #6b7280;
   border-top: 1px solid #f3f4f6;
+  margin-top: auto;
 }
 
 main {
+  flex: 1 1 auto;
   padding: 1rem;
+  min-height: 0;
 }
 
 @media (max-width: 640px) {
-  .flex.items-center.justify-between.p-4 {
-    padding: 0.5rem 0.75rem !important;
+  header .flex {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.5rem;
+    padding: 0.5rem 0 !important;
   }
   .logo-text {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-left: 0.5rem;
   }
   main {
