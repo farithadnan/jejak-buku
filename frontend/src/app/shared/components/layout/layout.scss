@@ -1,69 +1,114 @@
-/* Transition for width changes */
-aside {
-  transition: width 0.3s ease, transform 0.3s ease;
-}
+/* Remove sidebar and menu styles, focus on minimalist header */
 
-/* Fix for logo text flickering */
 .logo-text {
-  white-space: nowrap; /* Prevent text wrapping */
-  width: 100%; /* Full width */
-  overflow: hidden; /* Hide overflow */
+  white-space: nowrap;
+  overflow: hidden;
   opacity: 1;
   transition: opacity 0.2s ease;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #2563eb;
+  margin-left: 0.5rem;
 }
 
-/* When sidebar is collapsed, fade out text before width changes */
-aside.w-16 .logo-text {
-  opacity: 0;
-  width: 0;
-  margin: 0;
-}
-
-/* Ensure proper alignment of logo container */
 .logo-container {
   display: flex;
   align-items: center;
-  transition: justify-content 0.3s ease;
 }
 
-/* Tooltip for collapsed menu items */
-.menu-item-tooltip {
+header {
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+  background: #fff;
+  z-index: 10;
+}
+
+.flex.items-center.justify-between.p-4 {
+  padding: 0.75rem 1.25rem;
+}
+
+.user-menu {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.menu-item-tooltip:hover::after {
-  content: attr(data-tooltip);
+.user-name-btn {
+  background: none;
+  border: none;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+}
+
+.user-name-btn:hover,
+.user-name-btn:focus {
+  background: #f3f4f6;
+}
+
+.user-dropdown {
   position: absolute;
-  left: 100%;
-  top: 0;
-  margin-left: 10px;
-  background-color: #333;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 100;
+  right: 0;
+  top: 120%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 120px;
+  z-index: 20;
+  padding: 0.5rem 0;
+  animation: fadeIn 0.15s;
 }
 
-/* Styling for active menu items (works in both collapsed and expanded states) */
-a.bg-blue-100.text-blue-600 svg {
-  color: #3182ce;
+.user-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
 }
 
-/* Animations */
+.user-dropdown button:hover {
+  background: #fef2f2;
+}
+
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(-8px);}
+  to { opacity: 1; transform: translateY(0);}
 }
 
-.menu-label {
-  white-space: nowrap;
-  animation: fadeIn 0.3s ease;
+footer {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  border-top: 1px solid #f3f4f6;
 }
 
-/* Make the collapse button more visible on hover */
-button.absolute.-right-3:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+main {
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .flex.items-center.justify-between.p-4 {
+    padding: 0.5rem 0.75rem !important;
+  }
+  .logo-text {
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+  }
+  main {
+    padding: 0.5rem;
+  }
+  footer {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
 }
