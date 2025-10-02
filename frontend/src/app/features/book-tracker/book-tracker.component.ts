@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book } from '../../shared/services/book.service';
@@ -8,6 +8,8 @@ interface BookCard extends Book {
   rating?: number;
   notes?: string;
   status: 'planned' | 'reading' | 'completed';
+  pages?: number;
+  currentPage?: number;
 }
 
 @Component({
@@ -17,12 +19,21 @@ interface BookCard extends Book {
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
-export class BookTrackerComponent {
+export class BookTrackerComponent implements AfterViewChecked {
   loading = false;
   search = '';
   status = '';
 
-  editingRatingIndex: number | null = null; // <-- Add this property
+  hoveredIndex: number | null = null;
+  editingRatingIndex: number | null = null;
+  editingStatusIndex: number | null = null;
+  editingNotesIndex: number | null = null;
+  editingPagesIndex: number | null = null;
+  editingCurrentPageIndex: number | null = null;
+
+  @ViewChild('notesInput') notesInput!: ElementRef<HTMLTextAreaElement>;
+  @ViewChildren('pagesInput') pagesInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('currentPageInput') currentPageInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
   books: BookCard[] = [
     {
@@ -33,6 +44,8 @@ export class BookTrackerComponent {
       status: 'completed',
       rating: 5,
       notes: 'Great book for building habits. Highly recommended!',
+      pages: 320,
+      currentPage: 320,
       userId: 1
     },
     {
@@ -43,6 +56,8 @@ export class BookTrackerComponent {
       status: 'reading',
       rating: 4,
       notes: 'Focus and productivity tips.',
+      pages: 320,
+      currentPage: 320,
       userId: 1
     },
     {
@@ -52,6 +67,8 @@ export class BookTrackerComponent {
       imageUrl: 'https://covers.openlibrary.org/b/id/8228691-L.jpg',
       status: 'planned',
       notes: 'Classic for software developers.',
+      pages: 320,
+      currentPage: 320,
       userId: 1
     },
     {
@@ -62,6 +79,8 @@ export class BookTrackerComponent {
       status: 'completed',
       rating: 5,
       notes: 'Must-read for every programmer.',
+      pages: 320,
+      currentPage: 320,
       userId: 1
     },
     {
@@ -72,11 +91,31 @@ export class BookTrackerComponent {
       status: 'completed',
       rating: 5,
       notes: 'Must-read for every programmer.',
+      pages: 320,
+      currentPage: 320,
       userId: 1
     }
   ];
 
+  ngAfterViewChecked() {
+    if (this.editingNotesIndex !== null && this.notesInput) {
+      this.notesInput.nativeElement.focus();
+    }
+    if (this.editingPagesIndex !== null && this.pagesInputs) {
+      const input = this.pagesInputs.toArray()[this.editingPagesIndex];
+      if (input) input.nativeElement.focus();
+    }
+    if (this.editingCurrentPageIndex !== null && this.currentPageInputs) {
+      const input = this.currentPageInputs.toArray()[this.editingCurrentPageIndex];
+      if (input) input.nativeElement.focus();
+    }
+  }
+
   openCreateModal() {}
   openEditModal(book: BookCard) {}
   openDeleteModal(book: BookCard) {}
+
+  onRatingChange(value: string, book: BookCard) {
+    book.rating = value === 'none' ? undefined : Number(value);
+  }
 }
