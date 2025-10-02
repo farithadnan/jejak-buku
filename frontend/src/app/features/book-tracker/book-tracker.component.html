@@ -43,12 +43,15 @@
 
     <!-- Book Cards Grid -->
     <div *ngIf="books.length > 0; else noBooks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div *ngFor="let book of books" class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+      <div
+        *ngFor="let book of books; let i = index"
+        class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col transition duration-200 hover:shadow-xl hover:-translate-y-1 hover:scale-105"
+      >
         <!-- Book Image -->
         <img
           [src]="book.imageUrl || 'https://placehold.co/400x600?text=No+Cover'"
           alt="{{ book.title }} cover"
-          class="w-full h-76 object-cover bg-gray-100 rounded-t-lg"
+          class="w-full h-64 object-cover bg-gray-100 rounded-t-lg"
         />
 
         <!-- Book Details -->
@@ -63,10 +66,25 @@
             {{ book.status | titlecase }}
           </span>
           <div class="flex items-center mb-2">
-            <span *ngIf="book.rating !== undefined; else unrated" class="text-yellow-500 font-bold">{{ book.rating }}</span>
-            <span *ngIf="book.rating !== undefined" class="text-xs text-gray-400 ml-1">/5</span>
-            <ng-template #unrated>
-              <span class="text-gray-400 italic">No rating</span>
+            <!-- Editable Rating -->
+            <ng-container *ngIf="editingRatingIndex !== i; else ratingEdit">
+              <span class="text-yellow-500 font-bold cursor-pointer flex items-center" (click)="editingRatingIndex = i">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.174 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"/>
+                </svg>
+                {{ book.rating !== undefined ? book.rating : 'No rating' }}
+              </span>
+              <span *ngIf="book.rating !== undefined" class="text-xs text-gray-400 ml-1">/5</span>
+            </ng-container>
+            <ng-template #ratingEdit>
+              <select
+                [(ngModel)]="book.rating"
+                (change)="editingRatingIndex = null"
+                class="text-yellow-500 font-bold border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500"
+              >
+                <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{ r }}</option>
+              </select>
+              <span class="text-xs text-gray-400 ml-1">/5</span>
             </ng-template>
           </div>
           <p class="text-xs text-gray-500 mb-4 line-clamp-3">{{ book.notes || 'No notes.' }}</p>
@@ -74,9 +92,6 @@
           <div class="mt-auto flex gap-2">
             <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition" (click)="openEditModal(book)">
               Edit
-            </button>
-            <button class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition" (click)="openDeleteModal(book)">
-              Delete
             </button>
           </div>
         </div>

@@ -22,6 +22,8 @@ export class BookTrackerComponent {
   search = '';
   status = '';
 
+  editingRatingIndex: number | null = null; // <-- Add this property
+
   books: BookCard[] = [
     {
       id: 1,
