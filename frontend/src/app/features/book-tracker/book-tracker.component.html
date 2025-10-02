@@ -225,5 +225,51 @@
     <ng-template #noBooks>
       <div class="text-center text-gray-400 py-12">No books found.</div>
     </ng-template>
+
+    <!-- Pagination -->
+    <div class="mt-6">
+      <nav aria-label="Pagination" class="w-full">
+        <ul class="flex flex-wrap justify-center sm:justify-end items-center gap-2 overflow-x-auto scrollbar-hide px-1 sm:px-0">
+          <li>
+            <button
+              class="px-3 py-2 rounded-full bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg"
+              [disabled]="currentPage === 1"
+              (click)="goToPage(currentPage - 1)"
+              aria-label="Previous page"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          </li>
+          <li *ngFor="let page of visiblePages">
+            <button
+              class="px-2 py-1 rounded-full transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg"
+              [ngClass]="{
+                'bg-blue-600 text-white': page === currentPage,
+                'bg-gray-100 text-gray-700 hover:bg-blue-100 hover:text-blue-600': page !== currentPage
+              }"
+              (click)="typeof page === 'number' && goToPage(page)"
+              [disabled]="page === '...'"
+              aria-label="Page {{ page }}"
+            >
+              {{ page }}
+            </button>
+          </li>
+          <li>
+            <button
+              class="px-3 py-2 rounded-full bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg"
+              [disabled]="currentPage === totalPages"
+              (click)="goToPage(currentPage + 1)"
+              aria-label="Next page"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </div>

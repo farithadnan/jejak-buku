@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book } from '../../shared/services/book.service';
@@ -19,7 +19,7 @@ interface BookCard extends Book {
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
-export class BookTrackerComponent implements AfterViewChecked {
+export class BookTrackerComponent implements AfterViewChecked, OnInit {
   loading = false;
   search = '';
   status = '';
@@ -97,6 +97,29 @@ export class BookTrackerComponent implements AfterViewChecked {
     }
   ];
 
+  currentPage = 1;
+  totalPages = 10; // Set this based on your data
+  isMobile = window.innerWidth < 400; // You can tweak this threshold
+
+  get visiblePages(): (number | string)[] {
+    const pages: (number | string)[] = [];
+    const maxButtons = this.isMobile ? 3 : 7; // Show fewer on mobile
+    if (this.totalPages <= maxButtons) {
+      for (let i = 1; i <= this.totalPages; i++) pages.push(i);
+    } else {
+      if (this.currentPage <= Math.ceil(maxButtons / 2)) {
+        for (let i = 1; i <= maxButtons - 1; i++) pages.push(i);
+        pages.push('...', this.totalPages);
+      } else if (this.currentPage >= this.totalPages - Math.floor(maxButtons / 2)) {
+        pages.push(1, '...');
+        for (let i = this.totalPages - (maxButtons - 2); i <= this.totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1, '...', this.currentPage, '...', this.totalPages);
+      }
+    }
+    return pages;
+  }
+
   ngAfterViewChecked() {
     if (this.editingNotesIndex !== null && this.notesInput) {
       this.notesInput.nativeElement.focus();
@@ -111,11 +134,24 @@ export class BookTrackerComponent implements AfterViewChecked {
     }
   }
 
+  ngOnInit() {
+    window.addEventListener('resize', () => {
+      this.isMobile = window.innerWidth < 500;
+    });
+  }
+
   openCreateModal() {}
   openEditModal(book: BookCard) {}
   openDeleteModal(book: BookCard) {}
 
   onRatingChange(value: string, book: BookCard) {
     book.rating = value === 'none' ? undefined : Number(value);
+  }
+
+  goToPage(page: number) {
+    if (typeof page === 'number' && page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      // Fetch books for this page
+    }
   }
 }
