@@ -100,8 +100,13 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   currentPage = 1;
   totalPages = 10; // Set this based on your data
   isMobile = window.innerWidth < 400; // You can tweak this threshold
+  pageSize = 10;
 
   searchTerm$ = new Subject<string>();
+
+  get totalResults() {
+    return this.books.length; // Or use filteredBooks.length if you filter/search
+  }
 
   get visiblePages(): (number | string)[] {
     const pages: (number | string)[] = [];
@@ -120,6 +125,10 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       }
     }
     return pages;
+  }
+
+  get pageEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.totalResults);
   }
 
   ngAfterViewChecked() {

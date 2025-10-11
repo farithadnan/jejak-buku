@@ -320,5 +320,23 @@
         </ul>
       </nav>
     </div>
+
+    <!-- Results Summary and Page Size Selector (newly added) -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2 pt-2">
+      <div class="text-xs text-gray-500">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} – {{ pageEnd }} of {{ totalResults }} books
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="pageSize" class="text-xs text-gray-500">Per page:</label>
+        <select
+          id="pageSize"
+          [(ngModel)]="pageSize"
+          (change)="goToPage(1)"
+          class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500"
+        >
+          <option *ngFor="let size of [10, 20, 50]" [value]="size">{{ size }}</option>
+        </select>
+      </div>
+    </div>
   </div>
 </div>
