@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChil
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book } from '../../shared/services/book.service';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-book-tracker',
@@ -14,6 +15,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   loading = false;
   search = '';
   status = '';
+  genreFilter = '';
+  allGenres: string [] = ['Self-Help', 'Productivity', 'Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns'];
 
   hoveredIndex: number | null = null;
   hoveredGenresIndex: number | null = null;
@@ -98,6 +101,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   totalPages = 10; // Set this based on your data
   isMobile = window.innerWidth < 400; // You can tweak this threshold
 
+  searchTerm$ = new Subject<string>();
+
   get visiblePages(): (number | string)[] {
     const pages: (number | string)[] = [];
     const maxButtons = this.isMobile ? 3 : 7; // Show fewer on mobile
@@ -132,6 +137,11 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   }
 
   ngOnInit() {
+    this.searchTerm$.pipe(debounceTime(300)).subscribe(term => {
+      this.search = term;
+      // Call your filter or fetch logic here
+      // this.filterBooks();
+    });
     window.addEventListener('resize', () => {
       this.isMobile = window.innerWidth < 500;
     });
