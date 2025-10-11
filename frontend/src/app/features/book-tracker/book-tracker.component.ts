@@ -3,15 +3,6 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book } from '../../shared/services/book.service';
 
-interface BookCard extends Book {
-  imageUrl?: string;
-  rating?: number;
-  notes?: string;
-  status: 'planned' | 'reading' | 'completed';
-  pages?: number;
-  currentPage?: number;
-}
-
 @Component({
   selector: 'app-book-tracker',
   standalone: true,
@@ -25,6 +16,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   status = '';
 
   hoveredIndex: number | null = null;
+  hoveredGenresIndex: number | null = null;
   editingRatingIndex: number | null = null;
   editingStatusIndex: number | null = null;
   editingNotesIndex: number | null = null;
@@ -35,7 +27,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   @ViewChildren('pagesInput') pagesInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('currentPageInput') currentPageInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
-  books: BookCard[] = [
+  books: Book[] = [
     {
       id: 1,
       title: 'Atomic Habits',
@@ -46,7 +38,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       notes: 'Great book for building habits. Highly recommended!',
       pages: 320,
       currentPage: 320,
-      userId: 1
+      userId: 1,
+      genres: ['Self-Help', 'Productivity']
     },
     {
       id: 2,
@@ -58,7 +51,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       notes: 'Focus and productivity tips.',
       pages: 320,
       currentPage: 320,
-      userId: 1
+      userId: 1,
+      genres: ['Productivity', 'Self-Help']
     },
     {
       id: 3,
@@ -69,7 +63,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       notes: 'Classic for software developers.',
       pages: 320,
       currentPage: 320,
-      userId: 1
+      userId: 1,
+      genres: ['Programming', 'Software Development']
     },
     {
       id: 4,
@@ -81,7 +76,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       notes: 'Must-read for every programmer.',
       pages: 320,
       currentPage: 320,
-      userId: 1
+      userId: 1,
+      genres: ['Programming', 'Software Development']
     },
     {
       id: 5,
@@ -93,7 +89,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       notes: 'Must-read for every programmer.',
       pages: 320,
       currentPage: 320,
-      userId: 1
+      userId: 1,
+      genres: ['Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns']
     }
   ];
 
@@ -141,10 +138,10 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   }
 
   openCreateModal() {}
-  openEditModal(book: BookCard) {}
-  openDeleteModal(book: BookCard) {}
+  openEditModal(book: Book) {}
+  openDeleteModal(book: Book) {}
 
-  onRatingChange(value: string, book: BookCard) {
+  onRatingChange(value: string, book: Book) {
     book.rating = value === 'none' ? undefined : Number(value);
   }
 

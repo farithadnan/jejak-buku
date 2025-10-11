@@ -10,10 +10,20 @@ export interface Book {
   rating?: number;
   notes?: string;
   userId: number;
+  imageUrl?: string;
+  pages?: number;
+  currentPage?: number;
+  description?: string;
+  publishedDate?: string;
+  genres?: string[];
+  isbn?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
+  // Need to add environment variable for API URL
+  // atm more like endpoint than the domain/base path
+  // Need also establish the return types properly, do these after finish the ui, might need to update the backend as well
   private apiUrl = '/api/books';
 
   constructor(private http: HttpClient) {}
