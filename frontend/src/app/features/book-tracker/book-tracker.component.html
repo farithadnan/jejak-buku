@@ -340,3 +340,13 @@
     </div>
   </div>
 </div>
+
+<!-- Modal for editing/creating book -->
+<app-book-modal
+  *ngIf="showModal"
+  [book]="editingBook"
+  [mode]="modalMode"
+  [allGenres]="allGenres"
+  (save)="onModalSave($event)"
+  (cancel)="showModal = false"
+></app-book-modal>

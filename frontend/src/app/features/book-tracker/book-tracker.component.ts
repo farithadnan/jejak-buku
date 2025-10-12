@@ -1,13 +1,15 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book } from '../../shared/services/book.service';
 import { debounceTime, Subject } from 'rxjs';
+import { BookModalComponent } from './book-modal/book-modal.component';
 
 @Component({
   selector: 'app-book-tracker',
   standalone: true,
-  imports: [CommonModule, FormsModule, TitleCasePipe],
+  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent
+  ],
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
@@ -104,6 +106,12 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
 
   searchTerm$ = new Subject<string>();
 
+  showModal = false;
+  modalMode: 'edit' | 'create' = 'create';
+  editingBook: Partial<Book> = {};
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
   get totalResults() {
     return this.books.length; // Or use filteredBooks.length if you filter/search
   }
@@ -156,9 +164,24 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     });
   }
 
-  openCreateModal() {}
-  openEditModal(book: Book) {}
-  openDeleteModal(book: Book) {}
+  openCreateModal() {
+    this.editingBook = {};
+    this.modalMode = 'create';
+    this.showModal = true;
+    this.cdr.detectChanges();
+  }
+
+  openEditModal(book: Book) {
+    this.editingBook = { ...book };
+    this.modalMode = 'edit';
+    this.showModal = true;
+    this.cdr.detectChanges();
+  }
+
+  onModalSave(book: Partial<Book>) {
+    // handle save (create or update)
+    this.showModal = false;
+  }
 
   onRatingChange(value: string, book: Book) {
     book.rating = value === 'none' ? undefined : Number(value);

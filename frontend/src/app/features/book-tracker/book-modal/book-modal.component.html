@@ -1,0 +1,211 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm py-8">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 px-8 relative max-h-[90vh] overflow-y-auto">
+    <!-- Close Button -->
+    <button class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-xl" (click)="cancel.emit()" aria-label="Close">&times;</button>
+    <h2 class="text-lg font-semibold mb-4">
+      {{ mode === 'edit' ? 'Edit Book' : 'Add Book' }}
+    </h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-col md:flex-row gap-4">
+        <!-- Left Column -->
+        <div class="w-full md:w-1/2 flex flex-col gap-3">
+          <!-- Book Cover Upload -->
+          <div class="flex flex-col items-center">
+            <label class="block text-sm font-semibold mb-1 w-full text-left">Book Cover</label>
+            <ng-container *ngIf="imagePreview; else uploadArea">
+              <div class="relative w-32 h-44 mb-2">
+                <img [src]="imagePreview" alt="Book cover preview" class="w-32 h-44 object-cover rounded border" />
+                <button
+                  type="button"
+                  class="absolute bottom-2 right-2 bg-white bg-opacity-80 rounded-full p-1 shadow hover:bg-blue-100"
+                  (click)="fileInput.click()"
+                  title="Change cover"
+                  aria-label="Edit cover"
+                  style="right: 8px; bottom: 8px;"
+                >
+                  <!-- Pencil icon -->
+                  <svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15.232 5.232l3.536 3.536M9 13l6-6m2 2l-6 6M4 20h4l10-10a2.828 2.828 0 10-4-4L4 16v4z" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="absolute top-2 left-2 bg-red-100 text-red-700 rounded-full p-1 shadow hover:bg-red-200 text-xs"
+                  (click)="removeImage(); $event.stopPropagation()"
+                  title="Remove cover"
+                  aria-label="Remove cover"
+                >
+                  <!-- Trash icon -->
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M6 7v12a2 2 0 002 2h8a2 2 0 002-2V7M4 7h16M10 11v6M14 11v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3" />
+                  </svg>
+                </button>
+                <input
+                  #fileInput
+                  type="file"
+                  accept="image/*"
+                  (change)="onImageChange($event)"
+                  class="hidden"
+                />
+              </div>
+            </ng-container>
+            <ng-template #uploadArea>
+              <div
+                class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 p-4 cursor-pointer hover:border-blue-400 transition"
+                (click)="fileInput.click()"
+                (drop)="onImageChange($event); $event.preventDefault()"
+                (dragover)="$event.preventDefault()"
+                tabindex="0"
+                style="outline: none;"
+              >
+                <input
+                  #fileInput
+                  type="file"
+                  accept="image/png, image/jpeg, image/gif"
+                  (change)="onImageChange($event)"
+                  class="hidden"
+                />
+                <div class="text-gray-500 text-sm mb-1">
+                  <span class="font-medium text-blue-600">Upload a file</span>
+                  <span class="mx-1">or</span>
+                  drag and drop
+                </div>
+                <div class="text-xs text-gray-400 mb-2">PNG, JPG, GIF up to 10MB</div>
+                <div class="text-xs text-gray-400">No file chosen</div>
+              </div>
+            </ng-template>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Title</label>
+            <input formControlName="title" placeholder="Book title" required class="border rounded p-2 w-full text-sm" />
+            <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="text-xs text-red-500">Title is required.</div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Author</label>
+            <input formControlName="author" placeholder="Author name" required class="border rounded p-2 w-full text-sm" />
+            <div *ngIf="form.get('author')?.invalid && form.get('author')?.touched" class="text-xs text-red-500">Author is required.</div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Status</label>
+            <select formControlName="status" required class="border rounded p-2 w-full text-sm">
+              <option value="" disabled>Select status</option>
+              <option value="planned">Planned</option>
+              <option value="reading">Reading</option>
+              <option value="completed">Completed</option>
+            </select>
+            <div *ngIf="form.get('status')?.invalid && form.get('status')?.touched" class="text-xs text-red-500">Status is required.</div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Genres</label>
+            <div class="border rounded p-2 flex flex-wrap gap-1 max-h-24 overflow-y-auto bg-gray-50">
+              <span *ngFor="let genre of form.value.genres; let gi = index" class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs flex items-center">
+                {{ genre }}
+                <button type="button" (click)="removeGenre(gi)" class="ml-2 text-blue-700 hover:text-red-500 focus:outline-none text-lg" aria-label="Remove genre">&times;</button>
+              </span>
+              <input
+                type="text"
+                [(ngModel)]="newGenre"
+                (keydown.enter)="addGenre(); $event.preventDefault()"
+                [placeholder]="form.value.genres.length === 0 ? 'Add genre' : ''"
+                class="border-none bg-transparent text-sm focus:outline-none"
+                style="min-width: 80px;"
+                name="newGenre"
+                autocomplete="off"
+              />
+            </div>
+            <div class="mt-1 flex flex-wrap gap-1">
+              <button
+                *ngFor="let genre of allGenres"
+                type="button"
+                class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs hover:bg-blue-100 hover:text-blue-700"
+                (click)="newGenre = genre; addGenre()"
+                [disabled]="form.value.genres?.includes(genre)"
+              >
+                {{ genre }}
+              </button>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold mb-1">Pages</label>
+              <input type="number" min="1" formControlName="pages" placeholder="Total pages" class="border rounded p-2 w-full text-sm" />
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs font-semibold mb-1">Current Page</label>
+              <input type="number" min="0" formControlName="currentPage" placeholder="Current page" class="border rounded p-2 w-full text-sm" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Rating</label>
+            <select formControlName="rating" class="border rounded p-2 w-full text-sm">
+              <option [ngValue]="undefined">No rating</option>
+              <option *ngFor="let r of [1,2,3,4,5]" [ngValue]="r">{{ r }}</option>
+            </select>
+          </div>
+        </div>
+        <!-- Divider for desktop -->
+        <div class="hidden md:block w-px bg-gray-200 mx-2"></div>
+        <!-- Right Column -->
+        <div class="w-full md:w-1/2 flex flex-col gap-3">
+          <div>
+            <label class="block text-xs font-semibold mb-1">Description</label>
+            <textarea formControlName="description" placeholder="Short description" rows="2" class="border rounded p-2 w-full text-sm"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">Notes</label>
+            <textarea formControlName="notes" placeholder="Personal notes" rows="2" class="border rounded p-2 w-full text-sm"></textarea>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold mb-1">Start Date</label>
+              <input
+                type="date"
+                formControlName="startedDate"
+                [disabled]="unknownStartDate"
+                class="border rounded p-2 w-full text-sm"
+              />
+            </div>
+            <label class="flex items-center text-xs gap-1 mt-5">
+              <input type="checkbox" [checked]="unknownStartDate" (change)="setUnknownDate('startedDate', $event.target.checked)" />
+              Unknown
+            </label>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold mb-1">Finished Date</label>
+              <input
+                type="date"
+                formControlName="completedDate"
+                [disabled]="unknownCompletedDate"
+                class="border rounded p-2 w-full text-sm"
+              />
+            </div>
+            <label class="flex items-center text-xs gap-1 mt-5">
+              <input type="checkbox" [checked]="unknownCompletedDate" (change)="setUnknownDate('completedDate', $event.target.checked)" />
+              Unknown
+            </label>
+          </div>
+          <div class="flex-1 flex flex-col justify-end mt-auto">
+            <div class="flex justify-between gap-2 mt-4">
+              <button *ngIf="mode === 'edit'" type="button" (click)="onDelete()" class="px-4 py-2 rounded bg-red-100 text-red-700 hover:bg-red-200 flex items-center gap-1">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M6 7v12a2 2 0 002 2h8a2 2 0 002-2V7M4 7h16M10 11v6M14 11v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3" />
+                </svg>
+                Delete
+              </button>
+              <div class="flex gap-2 ml-auto">
+                <button type="button" (click)="cancel.emit()" class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Cancel</button>
+                <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" [disabled]="form.invalid">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

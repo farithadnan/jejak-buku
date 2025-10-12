@@ -17,6 +17,8 @@ export interface Book {
   publishedDate?: string;
   genres?: string[];
   isbn?: string;
+  startedDate?: string;
+  completedDate?: string;
 }
 
 @Injectable({ providedIn: 'root' })
