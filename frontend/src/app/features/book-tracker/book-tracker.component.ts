@@ -1,15 +1,14 @@
 import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Book } from '../../shared/services/book.service';
+import { Book, BookService } from '../../shared/services/book.service';
 import { debounceTime, Subject } from 'rxjs';
 import { BookModalComponent } from './book-modal/book-modal.component';
 
 @Component({
   selector: 'app-book-tracker',
   standalone: true,
-  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent
-  ],
+  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent],
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
@@ -18,7 +17,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   search = '';
   status = '';
   genreFilter = '';
-  allGenres: string [] = ['Self-Help', 'Productivity', 'Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns'];
+  allGenres: string[] = ['Self-Help', 'Productivity', 'Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns'];
 
   hoveredIndex: number | null = null;
   hoveredGenresIndex: number | null = null;
@@ -32,76 +31,11 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   @ViewChildren('pagesInput') pagesInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('currentPageInput') currentPageInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
-  books: Book[] = [
-    {
-      id: 1,
-      title: 'Atomic Habits',
-      author: 'James Clear',
-      imageUrl: 'https://covers.openlibrary.org/b/id/10523362-L.jpg',
-      status: 'completed',
-      rating: 5,
-      notes: 'Great book for building habits. Highly recommended!',
-      pages: 320,
-      currentPage: 320,
-      userId: 1,
-      genres: ['Self-Help', 'Productivity']
-    },
-    {
-      id: 2,
-      title: 'Deep Work',
-      author: 'Cal Newport',
-      imageUrl: 'https://covers.openlibrary.org/b/id/8231996-L.jpg',
-      status: 'reading',
-      rating: 4,
-      notes: 'Focus and productivity tips.',
-      pages: 320,
-      currentPage: 320,
-      userId: 1,
-      genres: ['Productivity', 'Self-Help']
-    },
-    {
-      id: 3,
-      title: 'The Pragmatic Programmer',
-      author: 'Andrew Hunt & David Thomas',
-      imageUrl: 'https://covers.openlibrary.org/b/id/8228691-L.jpg',
-      status: 'planned',
-      notes: 'Classic for software developers.',
-      pages: 320,
-      currentPage: 320,
-      userId: 1,
-      genres: ['Programming', 'Software Development']
-    },
-    {
-      id: 4,
-      title: 'Clean Code',
-      author: 'Robert C. Martin',
-      imageUrl: 'https://covers.openlibrary.org/b/id/6979861-L.jpg',
-      status: 'completed',
-      rating: 5,
-      notes: 'Must-read for every programmer.',
-      pages: 320,
-      currentPage: 320,
-      userId: 1,
-      genres: ['Programming', 'Software Development']
-    },
-    {
-      id: 5,
-      title: 'Clean Code',
-      author: 'Robert C. Martin',
-      imageUrl: 'https://covers.openlibrary.org/b/id/6979861-L.jpg',
-      status: 'completed',
-      rating: 5,
-      notes: 'Must-read for every programmer.',
-      pages: 320,
-      currentPage: 320,
-      userId: 1,
-      genres: ['Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns']
-    }
-  ];
-
+  books: Book[] = [];
   currentPage = 1;
-  totalPages = 10; // Set this based on your data
-  isMobile = window.innerWidth < 400; // You can tweak this threshold
+  totalPages = 1;
+  totalResults = 0;
+  isMobile = window.innerWidth < 400;
   pageSize = 10;
 
   searchTerm$ = new Subject<string>();
@@ -110,15 +44,11 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   modalMode: 'edit' | 'create' = 'create';
   editingBook: Partial<Book> = {};
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  get totalResults() {
-    return this.books.length; // Or use filteredBooks.length if you filter/search
-  }
+  constructor(private cdr: ChangeDetectorRef, private bookService: BookService) {}
 
   get visiblePages(): (number | string)[] {
     const pages: (number | string)[] = [];
-    const maxButtons = this.isMobile ? 3 : 7; // Show fewer on mobile
+    const maxButtons = this.isMobile ? 3 : 7;
     if (this.totalPages <= maxButtons) {
       for (let i = 1; i <= this.totalPages; i++) pages.push(i);
     } else {
@@ -156,11 +86,36 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   ngOnInit() {
     this.searchTerm$.pipe(debounceTime(300)).subscribe(term => {
       this.search = term;
-      // Call your filter or fetch logic here
-      // this.filterBooks();
+      this.currentPage = 1;
+      this.fetchBooks();
     });
     window.addEventListener('resize', () => {
       this.isMobile = window.innerWidth < 500;
+    });
+    this.fetchBooks();
+  }
+
+  fetchBooks() {
+    this.loading = true;
+    this.bookService.getBooks({
+      page: this.currentPage,
+      limit: this.pageSize,
+      search: this.search,
+      status: this.status as any,
+      // Optionally add genre filter logic here
+    }).subscribe({
+      next: (res) => {
+        this.books = res.books;
+        this.totalPages = res.totalPages;
+        this.totalResults = res.totalBooks;
+        this.loading = false;
+      },
+      error: () => {
+        this.books = [];
+        this.totalPages = 1;
+        this.totalResults = 0;
+        this.loading = false;
+      }
     });
   }
 
@@ -179,18 +134,39 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   }
 
   onModalSave(book: Partial<Book>) {
-    // handle save (create or update)
-    this.showModal = false;
+    if (this.modalMode === 'create') {
+      this.bookService.createBook(book as Book).subscribe(() => {
+        this.showModal = false;
+        this.fetchBooks();
+      });
+    } else if (this.modalMode === 'edit' && book.id) {
+      this.bookService.updateBook(book.id, book).subscribe(() => {
+        this.showModal = false;
+        this.fetchBooks();
+      });
+    }
+  }
+
+  onModalDelete(book: Partial<Book>) {
+    if (book.id) {
+      this.bookService.deleteBook(book.id).subscribe(() => {
+        this.showModal = false;
+        this.fetchBooks();
+      });
+    }
   }
 
   onRatingChange(value: string, book: Book) {
     book.rating = value === 'none' ? undefined : Number(value);
+    if (book.id) {
+      this.bookService.updateBook(book.id, { rating: book.rating }).subscribe(() => this.fetchBooks());
+    }
   }
 
   goToPage(page: number) {
     if (typeof page === 'number' && page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      // Fetch books for this page
+      this.fetchBooks();
     }
   }
 }
