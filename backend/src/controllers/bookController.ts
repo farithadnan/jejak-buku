@@ -5,9 +5,18 @@ import { Request, Response } from 'express';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { eq, and, like, count } from 'drizzle-orm';
 
-// Singleton Database connection
 const sqlite = new Database(process.env.DATABASE_URL!);
 const db = drizzle(sqlite);
+
+// Helper to parse genres
+function parseGenres(genres: any): string {
+  if (Array.isArray(genres)) return JSON.stringify(genres);
+  if (typeof genres === 'string') return genres;
+  return '[]';
+}
+function parseGenresOut(genres: any): string[] {
+  try { return genres ? JSON.parse(genres) : []; } catch { return []; }
+}
 
 // GET /api/books
 export const getBooks = async (req: Request, res: Response) => {
@@ -19,27 +28,16 @@ export const getBooks = async (req: Request, res: Response) => {
         const userId = req.query.userId as string | undefined;
 
         const whereClauses = [];
-
-        if (search) {
-            whereClauses.push(like(books.title, `%${search}%`));
-        }
-        if (status) {
-            whereClauses.push(eq(books.status, status));
-        }
-        if (userId) {
-            whereClauses.push(eq(books.userId, Number(userId)));
-        }
-
-        // Combine all filters with AND
+        if (search) whereClauses.push(like(books.title, `%${search}%`));
+        if (status) whereClauses.push(eq(books.status, status));
+        if (userId) whereClauses.push(eq(books.userId, Number(userId)));
         const whereCondition = whereClauses.length > 0 ? and(...whereClauses) : undefined;
 
-        // Get total count for pagination
         const totalBooks = await db.select({ count: count() })
             .from(books)
             .where(whereCondition)
             .get();
 
-        // Get paginated books
         const bookList = await db.select()
             .from(books)
             .where(whereCondition)
@@ -47,8 +45,11 @@ export const getBooks = async (req: Request, res: Response) => {
             .offset((page - 1) * limit)
             .all();
 
+        // Parse genres for each book
+        const booksOut = bookList.map(b => ({ ...b, genres: parseGenresOut(b.genres) }));
+
         res.json({
-            books: bookList,
+            books: booksOut,
             totalBooks: totalBooks?.count ?? 0,
             totalPages: Math.ceil((totalBooks?.count ?? 0) / limit),
             currentPage: page,
@@ -64,7 +65,7 @@ export const getBookById = async (req: Request, res: Response) => {
         const id = Number(req.params.id);
         const book = await db.select().from(books).where(eq(books.id, id)).get();
         if (!book) return res.status(404).json({ message: "Book not found" });
-        res.json(book);
+        res.json({ ...book, genres: parseGenresOut(book.genres) });
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
@@ -73,16 +74,18 @@ export const getBookById = async (req: Request, res: Response) => {
 // POST /api/books
 export const createBook = async (req: Request, res: Response) => {
   try {
-    const { title, author, status, rating, notes, userId } = req.body;
-    const result = await db.insert(books).values({
-      title,
-      author,
-      status,
-      rating,
-      notes,
-      userId,
-    }).returning().get();
-    res.status(201).json(result);
+    const now = new Date().toISOString();
+    const userId = req.body.userId;
+    const bookData = {
+      ...req.body,
+      genres: parseGenres(req.body.genres),
+      createdAt: now,
+      updatedAt: now,
+      createdBy: userId, // or req.user?.id if using auth
+      updatedBy: userId,
+    };
+    const result = await db.insert(books).values(bookData).returning().get();
+    res.status(201).json({ ...result, genres: parseGenresOut(result.genres) });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -92,14 +95,21 @@ export const createBook = async (req: Request, res: Response) => {
 export const updateBook = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const { title, author, status, rating, notes, userId } = req.body;
+    const now = new Date().toISOString();
+    const userId = req.body.userId;
+    const updateData = {
+      ...req.body,
+      genres: parseGenres(req.body.genres),
+      updatedAt: now,
+      updatedBy: userId,
+    };
     const result = await db.update(books)
-      .set({ title, author, status, rating, notes, userId })
+      .set(updateData)
       .where(eq(books.id, id))
       .returning()
       .get();
     if (!result) return res.status(404).json({ message: "Book not found" });
-    res.json(result);
+    res.json({ ...result, genres: parseGenresOut(result.genres) });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }

@@ -19,6 +19,19 @@ export const bookSchema = z.object({
   rating: z.number().int().min(0).max(5).optional(),
   notes: z.string().optional(),
   userId: z.number().int(),
+  imageUrl: z.string().optional(),
+  pages: z.number().int().optional(),
+  currentPage: z.number().int().optional(),
+  description: z.string().optional(),
+  publishedDate: z.string().optional(),
+  genres: z.union([z.string(), z.array(z.string())]).optional(),
+  isbn: z.string().optional(),
+  startedDate: z.string().optional(),
+  completedDate: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+  createdBy: z.number().int().optional(),
+  updatedBy: z.number().int().optional(),
 });
 
 // For :id param

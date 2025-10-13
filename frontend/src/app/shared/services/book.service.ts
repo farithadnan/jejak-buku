@@ -19,13 +19,21 @@ export interface Book {
   isbn?: string;
   startedDate?: string;
   completedDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: number;
+  updatedBy?: number;
+}
+
+export interface BookListResponse {
+  books: Book[];
+  totalBooks: number;
+  totalPages: number;
+  currentPage: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
-  // Need to add environment variable for API URL
-  // atm more like endpoint than the domain/base path
-  // Need also establish the return types properly, do these after finish the ui, might need to update the backend as well
   private apiUrl = '/api/books';
 
   constructor(private http: HttpClient) {}
@@ -36,14 +44,14 @@ export class BookService {
     search?: string;
     status?: 'planned' | 'reading' | 'completed';
     userId?: number;
-  }): Observable<any> {
+  }): Observable<BookListResponse> {
     let httpParams = new HttpParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) httpParams = httpParams.set(key, value as any);
       });
     }
-    return this.http.get<any>(this.apiUrl, { params: httpParams });
+    return this.http.get<BookListResponse>(this.apiUrl, { params: httpParams });
   }
 
   getBookById(id: number): Observable<Book> {
@@ -51,14 +59,17 @@ export class BookService {
   }
 
   createBook(book: Book): Observable<Book> {
-    return this.http.post<Book>(this.apiUrl, book);
+    // Ensure genres is sent as array or stringified if needed
+    const payload = { ...book, genres: book.genres ?? [] };
+    return this.http.post<Book>(this.apiUrl, payload);
   }
 
   updateBook(id: number, book: Partial<Book>): Observable<Book> {
-    return this.http.put<Book>(`${this.apiUrl}/${id}`, book);
+    const payload = { ...book, genres: book.genres ?? [] };
+    return this.http.put<Book>(`${this.apiUrl}/${id}`, payload);
   }
 
-  deleteBook(id: number): Observable<any> {
+  deleteBook(id: number): Observable<{ message: string }> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }
