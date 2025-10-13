@@ -12,7 +12,7 @@ const HOST = process.env.HOST || 'localhost';
 const PORT = Number(process.env.PORT) || 3000;
 const APP_URL = process.env.APP_URL || `http://localhost`;
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/books", bookRoutes);
