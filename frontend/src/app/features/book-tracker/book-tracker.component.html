@@ -5,7 +5,7 @@
 <div class="max-w-7xl mx-auto px-2 sm:px-4 py-4">
   <div class="bg-white p-4 sm:p-8 shadow-md rounded-lg">
     <!-- Search & filter controls -->
-    <div class="mb-6">
+    <div class="mb-3">
       <!-- Desktop-only filter/search bar -->
       <div class="hidden sm:block">
         <div class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row lg:flex-wrap lg:items-center lg:gap-3">
@@ -86,6 +86,8 @@
         </button>
       </div>
     </div>
+
+    <div class="border-b border-gray-200 my-2 mb-3"></div>
 
     <!-- Book Cards Grid -->
     <div *ngIf="books.length > 0; else noBooks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -294,8 +296,10 @@
       <div class="text-center text-gray-400 py-12">No books found.</div>
     </ng-template>
 
+    <!-- Before pagination -->
+    <div class="border-b border-gray-200 my-4"></div>
     <!-- Pagination -->
-    <div class="mt-6">
+    <div class="mt-3">
       <nav aria-label="Pagination" class="w-full">
         <ul class="flex flex-wrap justify-center sm:justify-end items-center gap-2 overflow-x-auto scrollbar-hide px-1 sm:px-0">
           <li>
