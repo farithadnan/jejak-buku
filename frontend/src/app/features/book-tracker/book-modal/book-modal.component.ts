@@ -54,6 +54,8 @@ export class BookModalComponent implements OnInit, OnChanges {
       description: [this.book.description || '', []],
       startedDate: [{ value: this.book.startedDate || '', disabled: this.unknownStartDate }, []],
       completedDate: [{ value: this.book.completedDate || '', disabled: this.unknownCompletedDate }, []],
+      isbn: [this.book.isbn || '', []],
+      publishedDate: [this.book.publishedDate || '', []],
     });
 
     this.imagePreview = this.book.imageUrl || '';
