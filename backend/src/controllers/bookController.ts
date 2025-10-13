@@ -76,17 +76,21 @@ export const createBook = async (req: Request, res: Response) => {
   try {
     const now = new Date().toISOString();
     const userId = req.body.userId;
+    // Example mapping before insert
     const bookData = {
       ...req.body,
+      image_url: req.body.imageUrl, // map camelCase to snake_case
       genres: parseGenres(req.body.genres),
       createdAt: now,
       updatedAt: now,
       createdBy: userId, // or req.user?.id if using auth
       updatedBy: userId,
     };
+    delete bookData.imageUrl; // remove camelCase to avoid duplicate
     const result = await db.insert(books).values(bookData).returning().get();
     res.status(201).json({ ...result, genres: parseGenresOut(result.genres) });
   } catch (error) {
+    console.error('Create Book Error:', error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
