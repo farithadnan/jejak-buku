@@ -18,6 +18,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   search = '';
   status = '';
   genreFilter = '';
+  showFilters = false;
   allGenres: string[] = ['Self-Help', 'Productivity', 'Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns'];
 
   hoveredIndex: number | null = null;
