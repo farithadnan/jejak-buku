@@ -1,30 +1,38 @@
-# Frontend
+# Jejak Buku Frontend
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
 
 ## Development server
 
-To start a local development server, run:
+### Localhost (private, only on your PC)
 
 ```bash
-ng serve
+npm run start:localhost
 ```
+or
+```bash
+ng serve --host localhost
+```
+- Open your browser at [http://localhost:4200](http://localhost:4200).
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Network (accessible from your phone or other devices on your WiFi)
 
 ```bash
-ng generate component component-name
+npm run start:network
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+or
 ```bash
-ng generate --help
+ng serve --host 0.0.0.0
 ```
+- Find your PC's IP address (e.g., `192.168.1.10` from `ipconfig` on Windows).
+- On your phone or another device (connected to the same WiFi), open:
+  `http://<your-pc-ip>:4200`
+  Example: `http://192.168.1.10:4200`
+
+## API Backend
+
+- Make sure your backend is running and accessible (see backend README).
+- If your backend is on a different host/port, update your API URLs in the Angular service or use environments.
 
 ## Building
 
@@ -34,11 +42,9 @@ To build the project run:
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This will compile your project and store the build artifacts in the `dist/` directory.
 
 ## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
 ```bash
 ng test
@@ -46,14 +52,27 @@ ng test
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
-
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Developer Notes
 
-## Additional Resources
+- **Switch between localhost and network easily** using the scripts above.
+- **For PWA/offline testing:**
+  - Use network mode and access from your phone for a real mobile experience.
+- **If you get CORS errors:**
+  - Make sure your backend allows requests from your frontend's origin.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Useful Commands
+
+| Command                | Description                                 |
+|------------------------|---------------------------------------------|
+| `npm run start:localhost` | Run frontend on localhost only           |
+| `npm run start:network`   | Run frontend on all network interfaces   |
+| `ng build`                | Build the frontend for production        |
+| `ng test`                 | Run unit tests                           |
+
+---
+
+For more information on using the Angular CLI, see the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
