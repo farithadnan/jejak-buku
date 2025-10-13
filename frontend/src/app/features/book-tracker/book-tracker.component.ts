@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Book, BookService } from '../../shared/services/book.service';
 import { debounceTime, Subject } from 'rxjs';
 import { BookModalComponent } from './book-modal/book-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-book-tracker',
@@ -44,7 +45,11 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   modalMode: 'edit' | 'create' = 'create';
   editingBook: Partial<Book> = {};
 
-  constructor(private cdr: ChangeDetectorRef, private bookService: BookService) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private bookService: BookService,
+    private toastr: ToastrService
+  ) {}
 
   get visiblePages(): (number | string)[] {
     const pages: (number | string)[] = [];
@@ -92,6 +97,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     window.addEventListener('resize', () => {
       this.isMobile = window.innerWidth < 500;
     });
+
+    // Fetch books on initial load
     this.fetchBooks();
   }
 
@@ -101,7 +108,6 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       page: this.currentPage,
       limit: this.pageSize,
       search: this.search,
-      // Only include status if not empty
       ...(this.status ? { status: this.status } : {})
       // Optionally add genre filter logic here
     };
@@ -140,11 +146,13 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       this.bookService.createBook(book as Book).subscribe(() => {
         this.showModal = false;
         this.fetchBooks();
+        this.toastr.success('Book created successfully!');
       });
     } else if (this.modalMode === 'edit' && book.id) {
       this.bookService.updateBook(book.id, book).subscribe(() => {
         this.showModal = false;
         this.fetchBooks();
+        this.toastr.success('Book updated successfully!');
       });
     }
   }
