@@ -45,15 +45,15 @@ export class BookModalComponent implements OnInit, OnChanges {
       imageUrl: [this.book.imageUrl || '', []],
       title: [this.book.title || '', [Validators.required]],
       author: [this.book.author || '', [Validators.required]],
-      status: [this.book.status || '', [Validators.required]],
+      status: [this.book.status || 'planned', [Validators.required]],
       genres: [this.book.genres ? [...this.book.genres] : [], []],
       pages: [this.book.pages ?? '', [Validators.min(1)]],
       currentPage: [this.book.currentPage ?? '', [Validators.min(0)]],
       rating: [this.book.rating ?? undefined, []],
       notes: [this.book.notes || '', []],
       description: [this.book.description || '', []],
-      startedDate: [this.book.startedDate || '', []],
-      completedDate: [this.book.completedDate || '', []],
+      startedDate: [{ value: this.book.startedDate || '', disabled: this.unknownStartDate }, []],
+      completedDate: [{ value: this.book.completedDate || '', disabled: this.unknownCompletedDate }, []],
     });
 
     this.imagePreview = this.book.imageUrl || '';
@@ -87,7 +87,9 @@ export class BookModalComponent implements OnInit, OnChanges {
 
   onSubmit() {
     if (this.form.valid) {
-      this.save.emit(this.form.value);
+      // Add userId (hardcoded for now, or get from auth/user service)
+      const bookData = { ...this.form.value, userId: 1 };
+      this.save.emit(bookData);
     }
   }
 

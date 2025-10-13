@@ -97,13 +97,15 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
 
   fetchBooks() {
     this.loading = true;
-    this.bookService.getBooks({
+    const params: any = {
       page: this.currentPage,
       limit: this.pageSize,
       search: this.search,
-      status: this.status as any,
+      // Only include status if not empty
+      ...(this.status ? { status: this.status } : {})
       // Optionally add genre filter logic here
-    }).subscribe({
+    };
+    this.bookService.getBooks(params).subscribe({
       next: (res) => {
         this.books = res.books;
         this.totalPages = res.totalPages;
