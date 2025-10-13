@@ -100,23 +100,3 @@ main {
   padding: 1rem;
   min-height: 0;
 }
-
-@media (max-width: 640px) {
-  header .flex {
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 0.5rem;
-    padding: 0.5rem 0 !important;
-  }
-  .logo-text {
-    font-size: 1rem;
-    margin-left: 0.5rem;
-  }
-  main {
-    padding: 0.5rem;
-  }
-  footer {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.8rem;
-  }
-}
