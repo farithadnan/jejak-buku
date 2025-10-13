@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "dev:network": "cross-env HOST=0.0.0.0 ts-node src/index.ts",
+    "dev:localhost": "cross-env HOST=localhost ts-node src/index.ts",
     "generate:migration": "npx drizzle-kit generate",
     "migrate": "npx drizzle-kit migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +25,7 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
+    "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
