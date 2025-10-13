@@ -87,8 +87,12 @@ export class BookModalComponent implements OnInit, OnChanges {
 
   onSubmit() {
     if (this.form.valid) {
-      // Add userId (hardcoded for now, or get from auth/user service)
-      const bookData = { ...this.form.value, userId: 1 };
+      // Always include id if editing
+      const bookData = {
+        ...this.form.value,
+        userId: 1,
+        ...(this.book.id ? { id: this.book.id } : {})
+      };
       this.save.emit(bookData);
     }
   }
