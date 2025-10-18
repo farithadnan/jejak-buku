@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="flex items-center justify-center" [class]="containerClass">
-      <div class="relative">
+    <div class="flex items-center justify-center w-full h-full" [class]="containerClass">
+      <div class="flex flex-col items-center justify-center">
         <!-- Spinner -->
         <div
           class="animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"
