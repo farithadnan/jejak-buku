@@ -124,8 +124,43 @@ export class BookModalComponent implements OnInit, OnChanges {
   }
 
   onGenreKeydown(event: KeyboardEvent) {
+    // Handle both keydown and input events for better mobile compatibility
     if (event.key === ',' || event.key === 'Enter') {
       event.preventDefault();
+      this.addGenre();
+    }
+  }
+
+  // Add new method for input event handling
+  onGenreInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
+
+    // Check if the last character is a comma
+    if (value.endsWith(',')) {
+      // Remove the comma and add the genre
+      this.newGenre = value.slice(0, -1).trim();
+      if (this.newGenre) {
+        this.addGenre();
+      }
+      // Clear the input
+      target.value = '';
+      this.newGenre = '';
+    } else {
+      this.newGenre = value;
+    }
+  }
+
+  // Add genre when user clicks on suggestion
+  selectGenre(genre: string) {
+    this.newGenre = genre;
+    this.addGenre();
+    this.markAsInteracted();
+  }
+
+  // Add genre when input loses focus (if there's text)
+  addGenreOnBlur() {
+    if (this.newGenre.trim()) {
       this.addGenre();
     }
   }

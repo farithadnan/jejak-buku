@@ -137,12 +137,15 @@
                   [(ngModel)]="newGenre"
                   [ngModelOptions]="{standalone: true}"
                   (keydown)="onGenreKeydown($event)"
-                  (input)="markAsInteracted()"
-                  [placeholder]="form.value.genres.length === 0 ? 'Enter genre' : ''"
+                  (input)="onGenreInput($event); markAsInteracted()"
+                  (blur)="addGenreOnBlur()"
+                  [placeholder]="form.value.genres.length === 0 ? 'Enter genre, press comma or enter' : ''"
                   class="border-none bg-transparent text-sm focus:outline-none"
                   style="min-width: 120px;"
                   name="newGenre"
                   autocomplete="off"
+                  inputmode="text"
+                  enterkeyhint="done"
                 />
               </div>
               <div class="mt-1 flex flex-wrap gap-1">
@@ -150,7 +153,7 @@
                   *ngFor="let genre of allGenres"
                   type="button"
                   class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs hover:bg-blue-100 hover:text-blue-700 cursor-pointer"
-                  (click)="newGenre = genre; addGenre(); markAsInteracted()"
+                  (click)="selectGenre(genre)"
                   [disabled]="form.value.genres?.includes(genre)"
                 >
                   {{ genre }}
