@@ -24,7 +24,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   status = '';
   genreFilter = '';
   showFilters = false;
-  allGenres: string[] = ['Self-Help', 'Productivity', 'Programming', 'Software Development', 'Agile', 'Best Practices', 'Refactoring', 'Design Patterns'];
+  allGenres: string[] = [];
 
   hoveredIndex: number | null = null;
   hoveredGenresIndex: number | null = null;
@@ -108,12 +108,23 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     this.fetchBooks();
   }
 
+  private extractGenresFromBooks() {
+    const genresSet = new Set<string>();
+    this.books.forEach(book => {
+      if (book.genres) {
+        book.genres.forEach(genre => genresSet.add(genre));
+      }
+    });
+    this.allGenres = Array.from(genresSet).sort();
+  }
+
   fetchBooks() {
     const params: any = {
       page: this.currentPage,
       limit: this.pageSize,
       search: this.search,
-      ...(this.status ? { status: this.status } : {})
+      ...(this.status ? { status: this.status } : {}),
+      ...(this.genreFilter ? { genre: this.genreFilter } : {})
     };
 
     this.bookService.getBooks(params).subscribe({
@@ -121,6 +132,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
         this.books = res.books;
         this.totalPages = res.totalPages;
         this.totalResults = res.totalBooks;
+        this.extractGenresFromBooks();
       },
       error: () => {
         this.books = [];
