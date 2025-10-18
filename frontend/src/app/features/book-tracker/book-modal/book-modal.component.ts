@@ -491,4 +491,30 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
   cancelConfirmation() {
     this.hideConfirmation();
   }
+
+  // Add these helper methods
+  isFormInvalid(): boolean {
+    return this.form.invalid;
+  }
+
+  hasRequiredFieldsTouched(): boolean {
+    const titleTouched = this.form.get('title')?.touched || false;
+    const authorTouched = this.form.get('author')?.touched || false;
+    return titleTouched || authorTouched;
+  }
+
+  getSaveButtonText(): string {
+    if (this.mode === 'create') {
+      if (this.isFormInvalid()) {
+        return 'Fill Required Fields';
+      }
+      return 'Create Book';
+    } else {
+      // Edit mode
+      if (this.isFormInvalid() && this.hasRequiredFieldsTouched()) {
+        return 'Fix Errors';
+      }
+      return 'Save Changes';
+    }
+  }
 }

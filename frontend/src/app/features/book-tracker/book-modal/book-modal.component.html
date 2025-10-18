@@ -348,6 +348,7 @@
     <!-- Fixed Footer with Buttons -->
     <div class="flex-shrink-0 border-t border-gray-200 p-4 bg-gray-50">
       <div class="flex justify-between gap-2">
+        <!-- Delete button for edit mode only -->
         <button
           *ngIf="mode === 'edit'"
           type="button"
@@ -360,17 +361,31 @@
           </svg>
           Delete
         </button>
-        <div class="flex gap-2 ml-auto">
-          <button type="button" (click)="onCancel()" class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer">Cancel</button>
+
+        <!-- Cancel/Save buttons container -->
+        <div class="flex gap-2" [ngClass]="{ 'ml-auto': mode === 'edit', 'w-full justify-end': mode === 'create' }">
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
+          >
+            Cancel
+          </button>
+
           <button
             type="button"
             (click)="onSubmit()"
-            class="px-4 py-2 rounded text-white hover:bg-blue-700 cursor-pointer transition-colors duration-200"
-            [class.bg-blue-600]="form.valid"
-            [class.bg-red-500]="form.invalid && (form.get('title')?.touched || form.get('author')?.touched)"
-            [class.hover:bg-red-600]="form.invalid && (form.get('title')?.touched || form.get('author')?.touched)"
+            class="px-4 py-2 rounded text-white cursor-pointer transition-colors duration-200 min-w-[80px] font-medium"
+            [disabled]="isFormInvalid()"
+            [ngClass]="{
+              'bg-green-600 hover:bg-green-700': mode === 'create' && !isFormInvalid(),
+              'bg-green-400 cursor-not-allowed': mode === 'create' && isFormInvalid(),
+              'bg-blue-600 hover:bg-blue-700': mode === 'edit' && !isFormInvalid(),
+              'bg-red-500 hover:bg-red-600': mode === 'edit' && isFormInvalid() && hasRequiredFieldsTouched(),
+              'bg-blue-400 cursor-not-allowed': mode === 'edit' && isFormInvalid() && !hasRequiredFieldsTouched()
+            }"
           >
-            {{ form.invalid && (form.get('title')?.touched || form.get('author')?.touched) ? 'Fix Errors' : 'Save' }}
+            {{ getSaveButtonText() }}
           </button>
         </div>
       </div>
