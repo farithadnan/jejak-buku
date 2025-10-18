@@ -268,6 +268,9 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSubmit() {
+    // Mark all fields as touched to show validation errors
+    this.markFormGroupTouched(this.form);
+
     if (this.form.valid) {
       const formValue = { ...this.form.value };
 
@@ -285,6 +288,32 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
         ...(this.book.id ? { id: this.book.id } : {})
       };
       this.save.emit(bookData);
+    } else {
+      // Show validation error message
+      this.showValidationErrors();
+    }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsTouched({ onlySelf: true });
+    });
+  }
+
+  private showValidationErrors() {
+    // You can add a toast notification here
+    const firstErrorField = Object.keys(this.form.controls).find(key => {
+      const control = this.form.get(key);
+      return control && control.invalid && control.touched;
+    });
+
+    if (firstErrorField) {
+      const fieldElement = document.querySelector(`[formControlName="${firstErrorField}"]`) as HTMLElement;
+      if (fieldElement) {
+        fieldElement.focus();
+        fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
   }
 

@@ -100,42 +100,66 @@
 
             <!-- Rest of left column fields -->
             <div>
-              <label class="block text-xs font-semibold mb-1">Title</label>
+              <label class="block text-xs font-semibold mb-1">Title *</label>
               <input
                 formControlName="title"
                 placeholder="Enter book title"
                 required
-                class="border rounded p-2 w-full text-sm"
+                class="border rounded p-2 w-full text-sm transition-colors duration-200"
+                [class.border-red-500]="form.get('title')?.invalid && form.get('title')?.touched"
+                [class.border-gray-300]="!(form.get('title')?.invalid && form.get('title')?.touched)"
+                [class.bg-red-50]="form.get('title')?.invalid && form.get('title')?.touched"
                 (input)="markAsInteracted()"
               />
-              <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="text-xs text-red-500">Title is required.</div>
+              <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="text-xs text-red-500 mt-1 flex items-center">
+                <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Title is required
+              </div>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold mb-1">Author</label>
+              <label class="block text-xs font-semibold mb-1">Author *</label>
               <input
                 formControlName="author"
                 placeholder="Enter author name"
                 required
-                class="border rounded p-2 w-full text-sm"
+                class="border rounded p-2 w-full text-sm transition-colors duration-200"
+                [class.border-red-500]="form.get('author')?.invalid && form.get('author')?.touched"
+                [class.border-gray-300]="!(form.get('author')?.invalid && form.get('author')?.touched)"
+                [class.bg-red-50]="form.get('author')?.invalid && form.get('author')?.touched"
                 (input)="markAsInteracted()"
               />
-              <div *ngIf="form.get('author')?.invalid && form.get('author')?.touched" class="text-xs text-red-500">Author is required.</div>
+              <div *ngIf="form.get('author')?.invalid && form.get('author')?.touched" class="text-xs text-red-500 mt-1 flex items-center">
+                <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Author is required
+              </div>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold mb-1">Status</label>
+              <label class="block text-xs font-semibold mb-1">Status *</label>
               <select
                 formControlName="status"
                 required
-                class="border rounded p-2 w-full text-sm"
+                class="border rounded p-2 w-full text-sm transition-colors duration-200"
+                [class.border-red-500]="form.get('status')?.invalid && form.get('status')?.touched"
+                [class.border-gray-300]="!(form.get('status')?.invalid && form.get('status')?.touched)"
+                [class.bg-red-50]="form.get('status')?.invalid && form.get('status')?.touched"
                 (change)="markAsInteracted()"
               >
                 <option value="planned">Planned</option>
                 <option value="reading">Reading</option>
                 <option value="completed">Completed</option>
               </select>
-              <div *ngIf="form.get('status')?.invalid && form.get('status')?.touched" class="text-xs text-red-500">Status is required.</div>
+              <div *ngIf="form.get('status')?.invalid && form.get('status')?.touched" class="text-xs text-red-500 mt-1 flex items-center">
+                <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Status is required
+              </div>
             </div>
 
             <div>
@@ -333,8 +357,15 @@
         </button>
         <div class="flex gap-2 ml-auto">
           <button type="button" (click)="onCancel()" class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer">Cancel</button>
-          <button type="button" (click)="onSubmit()" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer" [disabled]="form.invalid">
-            Save
+          <button
+            type="button"
+            (click)="onSubmit()"
+            class="px-4 py-2 rounded text-white hover:bg-blue-700 cursor-pointer transition-colors duration-200"
+            [class.bg-blue-600]="form.valid"
+            [class.bg-red-500]="form.invalid && (form.get('title')?.touched || form.get('author')?.touched)"
+            [class.hover:bg-red-600]="form.invalid && (form.get('title')?.touched || form.get('author')?.touched)"
+          >
+            {{ form.invalid && (form.get('title')?.touched || form.get('author')?.touched) ? 'Fix Errors' : 'Save' }}
           </button>
         </div>
       </div>
