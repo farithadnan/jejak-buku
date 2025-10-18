@@ -41,6 +41,10 @@ export class BookModalComponent implements OnInit, OnChanges {
   }
 
   buildForm() {
+    // Check if dates should be disabled based on their values
+    this.unknownStartDate = !this.book.startedDate || this.book.startedDate === '';
+    this.unknownCompletedDate = !this.book.completedDate || this.book.completedDate === '';
+
     this.form = this.fb.group({
       imageUrl: [this.book.imageUrl || '', []],
       title: [this.book.title || '', [Validators.required]],
@@ -52,8 +56,14 @@ export class BookModalComponent implements OnInit, OnChanges {
       rating: [this.book.rating ?? undefined, []],
       notes: [this.book.notes || '', []],
       description: [this.book.description || '', []],
-      startedDate: [{ value: this.book.startedDate || '', disabled: this.unknownStartDate }, []],
-      completedDate: [{ value: this.book.completedDate || '', disabled: this.unknownCompletedDate }, []],
+      startedDate: [{
+        value: this.book.startedDate || '',
+        disabled: this.unknownStartDate
+      }, []],
+      completedDate: [{
+        value: this.book.completedDate || '',
+        disabled: this.unknownCompletedDate
+      }, []],
       isbn: [this.book.isbn || '', []],
       publishedDate: [this.book.publishedDate || '', []],
     });
@@ -89,9 +99,18 @@ export class BookModalComponent implements OnInit, OnChanges {
 
   onSubmit() {
     if (this.form.valid) {
-      // Always include id if editing
+      const formValue = { ...this.form.value };
+
+      // Handle disabled fields - don't include them if unknown is checked
+      if (this.unknownStartDate) {
+        formValue.startedDate = '';
+      }
+      if (this.unknownCompletedDate) {
+        formValue.completedDate = '';
+      }
+
       const bookData = {
-        ...this.form.value,
+        ...formValue,
         userId: 1,
         ...(this.book.id ? { id: this.book.id } : {})
       };
