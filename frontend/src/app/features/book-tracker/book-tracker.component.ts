@@ -182,10 +182,85 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     }
   }
 
-  onRatingChange(value: string, book: Book) {
-    book.rating = value === 'none' ? undefined : Number(value);
+  onStatusChange(value: string, book: Book) {
+    book.status = value as 'planned' | 'reading' | 'completed';
     if (book.id) {
-      this.bookService.updateBook(book.id, { rating: book.rating }).subscribe(() => this.fetchBooks());
+      this.bookService.updateBook(book.id, { status: book.status }).subscribe({
+        next: () => {
+          this.toastr.success('Status updated successfully!');
+          this.editingStatusIndex = null;
+        },
+        error: () => {
+          this.toastr.error('Failed to update status');
+          this.editingStatusIndex = null;
+        }
+      });
+    }
+  }
+
+  onRatingChange(value: string, book: Book) {
+    book.rating = value === '' || value === 'undefined' ? undefined : Number(value);
+    if (book.id) {
+      this.bookService.updateBook(book.id, { rating: book.rating }).subscribe({
+        next: () => {
+          this.toastr.success('Rating updated successfully!');
+          this.editingRatingIndex = null;
+        },
+        error: () => {
+          this.toastr.error('Failed to update rating');
+          this.editingRatingIndex = null;
+        }
+      });
+    }
+  }
+
+  onNotesChange(value: string, book: Book) {
+    book.notes = value;
+    if (book.id) {
+      this.bookService.updateBook(book.id, { notes: book.notes }).subscribe({
+        next: () => {
+          this.toastr.success('Notes updated successfully!');
+          this.editingNotesIndex = null;
+        },
+        error: () => {
+          this.toastr.error('Failed to update notes');
+          this.editingNotesIndex = null;
+        }
+      });
+    }
+  }
+
+  onCurrentPageChange(value: string, book: Book) {
+    const currentPage = parseInt(value) || 0;
+    book.currentPage = currentPage;
+    if (book.id) {
+      this.bookService.updateBook(book.id, { currentPage: book.currentPage }).subscribe({
+        next: () => {
+          this.toastr.success('Current page updated successfully!');
+          this.editingCurrentPageIndex = null;
+        },
+        error: () => {
+          this.toastr.error('Failed to update current page');
+          this.editingCurrentPageIndex = null;
+        }
+      });
+    }
+  }
+
+  onPagesChange(value: string, book: Book) {
+    const pages = parseInt(value) || 0;
+    book.pages = pages;
+    if (book.id) {
+      this.bookService.updateBook(book.id, { pages: book.pages }).subscribe({
+        next: () => {
+          this.toastr.success('Total pages updated successfully!');
+          this.editingPagesIndex = null;
+        },
+        error: () => {
+          this.toastr.error('Failed to update total pages');
+          this.editingPagesIndex = null;
+        }
+      });
     }
   }
 
