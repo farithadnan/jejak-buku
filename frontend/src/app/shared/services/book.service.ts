@@ -47,16 +47,17 @@ export class BookService {
     search?: string;
     status?: 'planned' | 'reading' | 'completed';
     userId?: number;
+    genre?: string;
   }): Observable<BookListResponse> {
     this.loadingService.show();
-    
+
     let httpParams = new HttpParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) httpParams = httpParams.set(key, value as any);
       });
     }
-    
+
     return this.http.get<BookListResponse>(this.apiUrl, { params: httpParams })
       .pipe(finalize(() => this.loadingService.hide()));
   }

@@ -46,6 +46,7 @@ export const bookQuerySchema = z.object({
   search: z.string().optional(),
   status: z.enum(["planned", "reading", "completed"]).optional(),
   userId: z.string().regex(/^\d+$/, "User ID must be a number").optional(),
+  genre: z.string().optional(),
 });
 
 // Route Handlers pointed to controller functions

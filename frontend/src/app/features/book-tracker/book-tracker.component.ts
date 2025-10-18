@@ -108,16 +108,6 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     this.fetchBooks();
   }
 
-  private extractGenresFromBooks() {
-    const genresSet = new Set<string>();
-    this.books.forEach(book => {
-      if (book.genres) {
-        book.genres.forEach(genre => genresSet.add(genre));
-      }
-    });
-    this.allGenres = Array.from(genresSet).sort();
-  }
-
   fetchBooks() {
     const params: any = {
       page: this.currentPage,
@@ -139,6 +129,32 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
         this.totalPages = 1;
         this.totalResults = 0;
         this.toastr.error('Failed to load books');
+      }
+    });
+  }
+
+  private extractGenresFromBooks() {
+    // Get all genres from all books (not just filtered results)
+    // We need to make a separate call to get all books for genre extraction
+    this.bookService.getBooks({ limit: 1000 }).subscribe({
+      next: (res) => {
+        const genresSet = new Set<string>();
+        res.books.forEach(book => {
+          if (book.genres) {
+            book.genres.forEach(genre => genresSet.add(genre));
+          }
+        });
+        this.allGenres = Array.from(genresSet).sort();
+      },
+      error: () => {
+        // Fallback to current books if all books call fails
+        const genresSet = new Set<string>();
+        this.books.forEach(book => {
+          if (book.genres) {
+            book.genres.forEach(genre => genresSet.add(genre));
+          }
+        });
+        this.allGenres = Array.from(genresSet).sort();
       }
     });
   }

@@ -26,11 +26,15 @@ export const getBooks = async (req: Request, res: Response) => {
         const search = req.query.search as string | undefined;
         const status = req.query.status as ("planned" | "reading" | "completed") | undefined;
         const userId = req.query.userId as string | undefined;
+        const genre = req.query.genre as string | undefined; // Add this line
 
         const whereClauses = [];
         if (search) whereClauses.push(like(books.title, `%${search}%`));
         if (status) whereClauses.push(eq(books.status, status));
         if (userId) whereClauses.push(eq(books.userId, Number(userId)));
+        // Add genre filtering
+        if (genre) whereClauses.push(like(books.genres, `%"${genre}"%`));
+
         const whereCondition = whereClauses.length > 0 ? and(...whereClauses) : undefined;
 
         const totalBooks = await db.select({ count: count() })
