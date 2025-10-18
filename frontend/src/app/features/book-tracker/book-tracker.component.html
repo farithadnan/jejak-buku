@@ -348,7 +348,7 @@
       <div *ngIf="books.length > 0; else noBooks" class="space-y-4">
         <div
           *ngFor="let book of books; let i = index"
-          class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 relative group">
+          class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 relative group cursor-pointer">
 
           <div class="flex gap-4">
             <!-- Book Cover (smaller in list view) -->
@@ -373,7 +373,7 @@
 
                 <!-- Edit Button -->
                 <button
-                  class="p-2 rounded-lg bg-blue-600 bg-opacity-0 text-blue-600 hover:bg-opacity-100 hover:text-white transition-all duration-200 opacity-0 group-hover:opacity-100 cursor-pointer"
+                  class="p-2 rounded-lg bg-blue-600 text-white transition-all duration-200 opacity-0 group-hover:opacity-100 hover:bg-blue-700 cursor-pointer"
                   (click)="openEditModal(book)"
                   title="Edit Book"
                   aria-label="Edit Book"
