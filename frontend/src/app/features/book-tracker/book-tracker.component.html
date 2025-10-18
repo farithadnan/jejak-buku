@@ -18,8 +18,7 @@
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
               </div>
               <!-- Search input -->
@@ -64,6 +63,37 @@
               <option *ngFor="let genre of allGenres" [value]="genre">{{ genre }}</option>
             </select>
           </div>
+
+          <!-- View Mode Toggle -->
+          <div class="flex bg-gray-100 rounded-lg p-1">
+            <button
+              (click)="setViewMode('grid')"
+              class="px-3 py-1 rounded-md text-sm font-medium transition-colors cursor-pointer"
+              [ngClass]="{
+                'bg-white text-gray-900 shadow-sm': viewMode === 'grid',
+                'text-gray-500 hover:text-gray-900': viewMode !== 'grid'
+              }"
+              title="Grid View"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button
+              (click)="setViewMode('list')"
+              class="px-3 py-1 rounded-md text-sm font-medium transition-colors cursor-pointer"
+              [ngClass]="{
+                'bg-white text-gray-900 shadow-sm': viewMode === 'list',
+                'text-gray-500 hover:text-gray-900': viewMode !== 'list'
+              }"
+              title="List View"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+
           <!-- Add Book button -->
           <div class="w-full lg:w-auto lg:ml-auto">
             <button (click)="openCreateModal()" class="w-full lg:w-auto px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-center gap-2 cursor-pointer">
@@ -80,10 +110,22 @@
       <div class="flex sm:hidden mb-4">
         <button class="flex-1 mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium cursor-pointer" (click)="showFilters = true">
           <svg class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
           </svg>
           Filters
+        </button>
+        <!-- Mobile View Toggle -->
+        <button
+          (click)="toggleViewMode()"
+          class="mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium cursor-pointer"
+          [title]="viewMode === 'grid' ? 'Switch to List View' : 'Switch to Grid View'"
+        >
+          <svg *ngIf="viewMode === 'grid'" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          <svg *ngIf="viewMode === 'list'" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
         </button>
         <button class="flex-1 ml-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium flex items-center justify-center gap-1 cursor-pointer" (click)="openCreateModal()">
           <span class="text-2xl leading-none">+</span>
@@ -95,211 +137,381 @@
 
     <div class="border-b border-gray-200 my-2 mb-3"></div>
 
-    <!-- Book Cards Grid -->
-    <div *ngIf="books.length > 0; else noBooks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div
-        *ngFor="let book of books; let i = index"
-        class="bg-white rounded-lg shadow-md overflow-visible flex flex-col transition duration-200 hover:shadow-xl hover:-translate-y-1 hover:scale-105 relative group">
-        <!-- Book Image with lazy loading -->
-        <img
-          [src]="book.imageUrl || 'https://placehold.co/400x600?text=No+Cover'"
-          alt="{{ book.title }} cover"
-          class="w-full h-64 object-cover bg-gray-100 rounded-t-lg"
-          loading="lazy"
-          (error)="onImageError($event)"
-        />
+    <!-- Grid View (existing) -->
+    <div *ngIf="viewMode === 'grid'" class="book-grid">
+      <div *ngIf="books.length > 0; else noBooks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Your existing book cards code here -->
+        <div
+          *ngFor="let book of books; let i = index"
+          class="bg-white rounded-lg shadow-md overflow-visible flex flex-col transition duration-200 hover:shadow-xl hover:-translate-y-1 hover:scale-105 relative group">
+          <!-- Your existing book card content -->
+          <!-- Book Image with lazy loading -->
+          <img
+            [src]="book.imageUrl || 'https://placehold.co/400x600?text=No+Cover'"
+            alt="{{ book.title }} cover"
+            class="w-full h-64 object-cover bg-gray-100 rounded-t-lg"
+            loading="lazy"
+            (error)="onImageError($event)"
+          />
 
-        <!-- Edit Button (top right, only on hover, blue background and color transition) -->
-        <button
-          class="absolute top-2 right-2 p-2 rounded-lg bg-blue-600 bg-opacity-80 text-white shadow transition hidden group-hover:block hover:bg-blue-800 hover:text-white hover:bg-opacity-100 cursor-pointer"
-          (click)="openEditModal(book)"
-          title="Edit Book"
-          style="z-index:2"
-          aria-label="Edit Book"
-        >
-          <!-- Modern pencil icon (Heroicons Pencil Square) -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M16.862 3.487a2.25 2.25 0 113.182 3.182l-9.193 9.193a2.25 2.25 0 01-.878.547l-3.25 1.083a.75.75 0 01-.948-.948l1.083-3.25a2.25 2.25 0 01.547-.878l9.193-9.193z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M19.5 13.5V19.5A2.25 2.25 0 0117.25 21.75H4.5A2.25 2.25 0 012.25 19.5V6.75A2.25 2.25 0 014.5 4.5h6" />
-          </svg>
-        </button>
+          <!-- Edit Button (top right, only on hover, blue background and color transition) -->
+          <button
+            class="absolute top-2 right-2 p-2 rounded-lg bg-blue-600 bg-opacity-80 text-white shadow transition hidden group-hover:block hover:bg-blue-800 hover:text-white hover:bg-opacity-100 cursor-pointer"
+            (click)="openEditModal(book)"
+            title="Edit Book"
+            style="z-index:2"
+            aria-label="Edit Book"
+          >
+            <!-- Modern pencil icon (Heroicons Pencil Square) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M16.862 3.487a2.25 2.25 0 113.182 3.182l-9.193 9.193a2.25 2.25 0 01-.878.547l-3.25 1.083a.75.75 0 01-.948-.948l1.083-3.25a2.25 2.25 0 01.547-.878l9.193-9.193z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19.5 13.5V19.5A2.25 2.25 0 0117.25 21.75H4.5A2.25 2.25 0 012.25 19.5V6.75A2.25 2.25 0 014.5 4.5h6" />
+            </svg>
+          </button>
 
-        <!-- Book Details -->
-        <div class="p-4 flex-1 flex flex-col sm:p-4 p-2">
-          <!-- Title & Author (hover box, not editable, similar to notes) -->
-          <div class="group relative mb-2">
-            <h2 class="text-lg sm:text-lg text-base font-semibold text-gray-800 truncate cursor-pointer"
-                (mouseenter)="hoveredIndex = i"
-                (mouseleave)="hoveredIndex = null">
-              {{ book.title }}
-            </h2>
-            <p class="text-sm sm:text-sm text-xs text-gray-600 truncate cursor-pointer"
-               (mouseenter)="hoveredIndex = i"
-               (mouseleave)="hoveredIndex = null">
-              by {{ book.author }}
-            </p>
-            <!-- Hover box, not editable, styled like notes edit box -->
-            <div *ngIf="hoveredIndex === i"
-                 class="absolute left-0 top-full mt-2 z-10 bg-white border border-gray-300 rounded p-2 text-xs shadow-lg w-64 break-words">
-              <div class="font-bold text-gray-800 mb-1" style="word-break:break-word;">{{ book.title }}</div>
-              <div class="text-gray-600" style="word-break:break-word;">{{ book.author }}</div>
-            </div>
-          </div>
-
-          <!-- Status with icon and inline edit -->
-          <div class="flex items-center mb-2">
-            <ng-container *ngIf="editingStatusIndex !== i; else statusEdit">
-              <span class="flex items-center cursor-pointer px-2 py-1 rounded text-xs font-semibold"
-                    [ngClass]="{
-                      'bg-yellow-100 text-yellow-700': book.status === 'planned',
-                      'bg-blue-100 text-blue-700': book.status === 'reading',
-                      'bg-green-100 text-green-700': book.status === 'completed'
-                    }"
-                    (click)="editingStatusIndex = i">
-                <svg *ngIf="book.status === 'planned'" class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                </svg>
-                <svg *ngIf="book.status === 'reading'" class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <svg *ngIf="book.status === 'completed'" class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-                {{ book.status | titlecase }}
-              </span>
-            </ng-container>
-            <ng-template #statusEdit>
-              <select #statusSelect
-                [(ngModel)]="book.status"
-                (change)="onStatusChange(statusSelect.value, book)"
-                (blur)="editingStatusIndex = null"
-                class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500"
-                autofocus>
-                <option value="planned">Planned</option>
-                <option value="reading">Reading</option>
-                <option value="completed">Completed</option>
-              </select>
-            </ng-template>
-          </div>
-
-          <!-- Current Page (inline editable), Total Pages only editable via Edit button -->
-          <div class="text-xs text-gray-500 mb-2">
-            <ng-container *ngIf="editingCurrentPageIndex !== i; else currentPageEdit">
-              <span class="flex items-center cursor-pointer" (click)="editingCurrentPageIndex = i">
-                <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
-                </svg>
-                Page {{ book.currentPage ?? 0 }} of {{ book.pages ?? '?' }}
-              </span>
-            </ng-container>
-            <ng-template #currentPageEdit>
-              <input
-                #currentPageInput
-                type="number"
-                min="0"
-                [max]="book.pages || 9999"
-                [(ngModel)]="book.currentPage"
-                (blur)="onCurrentPageChange(currentPageInput.value, book)"
-                (keydown.enter)="onCurrentPageChange(currentPageInput.value, book)"
-                class="border border-gray-300 rounded px-1 py-0.5 text-xs w-16 focus:ring-2 focus:ring-blue-500"
-                autofocus
-              />
-              <span class="ml-2 text-gray-400">of {{ book.pages ?? '?' }}</span>
-            </ng-template>
-          </div>
-
-          <!-- Editable Rating -->
-          <div class="flex items-center mb-2">
-            <ng-container *ngIf="editingRatingIndex !== i; else ratingEdit">
-              <span class="text-yellow-500 font-bold cursor-pointer flex items-center" (click)="editingRatingIndex = i">
-                <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                {{ book.rating ?? 'No rating' }}
-              </span>
-              <span *ngIf="book.rating !== undefined" class="text-xs text-gray-400 ml-1">/5</span>
-            </ng-container>
-            <ng-template #ratingEdit>
-              <select #ratingSelect
-                [(ngModel)]="book.rating"
-                (change)="onRatingChange(ratingSelect.value, book)"
-                (blur)="editingRatingIndex = null"
-                class="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500"
-                aria-label="Edit rating"
-                autofocus>
-                <option [ngValue]="undefined">No rating</option>
-                <option [ngValue]="1">1</option>
-                <option [ngValue]="2">2</option>
-                <option [ngValue]="3">3</option>
-                <option [ngValue]="4">4</option>
-                <option [ngValue]="5">5</option>
-              </select>
-              <span class="text-xs text-gray-400 ml-1">/5</span>
-            </ng-template>
-          </div>
-
-          <!-- Notes with Inline Edit -->
-          <div class="text-xs text-gray-500 mb-4 line-clamp-3">
-            <ng-container *ngIf="editingNotesIndex !== i; else notesEdit">
-              <span
-                class="cursor-pointer hover:bg-gray-50 p-1 rounded"
-                (click)="editingNotesIndex = i"
-                [title]="book.notes || 'No notes.'"
-                style="word-break:break-word;">
-                {{ book.notes || 'Click to add notes...' }}
-              </span>
-            </ng-container>
-            <ng-template #notesEdit>
-              <textarea
-                #notesInput
-                [(ngModel)]="book.notes"
-                (blur)="onNotesChange(notesInput.value, book)"
-                (keydown.escape)="editingNotesIndex = null"
-                placeholder="Enter notes..."
-                class="w-full border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500"
-                rows="3"
-                autofocus></textarea>
-            </ng-template>
-          </div>
-
-          <!-- Genres (badges) -->
-          <div *ngIf="book.genres as genres" class="flex flex-wrap gap-1 mb-2 relative group">
-            <ng-container *ngFor="let genre of genres | slice:0:3">
-              <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">{{ genre }}</span>
-            </ng-container>
-            <ng-container *ngIf="genres.length > 3">
-              <span
-                class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs cursor-pointer"
-                (mouseenter)="hoveredGenresIndex = i"
-                (mouseleave)="hoveredGenresIndex = null">
-                +{{ genres.length - 3 }}
-              </span>
-              <!-- Tooltip with all genres -->
-              <div
-                *ngIf="hoveredGenresIndex === i"
-                class="absolute left-0 top-full mt-1 z-20 bg-white border border-gray-300 rounded shadow-lg p-2 text-xs w-48">
-                <div class="flex flex-wrap gap-1">
-                  <span *ngFor="let genre of genres" class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">{{ genre }}</span>
-                </div>
+          <!-- Book Details -->
+          <div class="p-4 flex-1 flex flex-col sm:p-4 p-2">
+            <!-- Title & Author (hover box, not editable, similar to notes) -->
+            <div class="group relative mb-2">
+              <h2 class="text-lg sm:text-lg text-base font-semibold text-gray-800 truncate cursor-pointer"
+                  (mouseenter)="hoveredIndex = i"
+                  (mouseleave)="hoveredIndex = null">
+                {{ book.title }}
+              </h2>
+              <p class="text-sm sm:text-sm text-xs text-gray-600 truncate cursor-pointer"
+                 (mouseenter)="hoveredIndex = i"
+                 (mouseleave)="hoveredIndex = null">
+                by {{ book.author }}
+              </p>
+              <!-- Hover box, not editable, styled like notes edit box -->
+              <div *ngIf="hoveredIndex === i"
+                   class="absolute left-0 top-full mt-2 z-10 bg-white border border-gray-300 rounded p-2 text-xs shadow-lg w-64 break-words">
+                <div class="font-bold text-gray-800 mb-1" style="word-break:break-word;">{{ book.title }}</div>
+                <div class="text-gray-600" style="word-break:break-word;">{{ book.author }}</div>
               </div>
-            </ng-container>
-          </div>
+            </div>
 
-          <!-- Progress Bar -->
-          <div class="w-full h-2 bg-gray-200 rounded mt-1">
-            <div
-              class="h-2 bg-blue-500 rounded"
-              [style.width.%]="book.pages ? (book.currentPage ?? 0) / book.pages * 100 : 0"
-            ></div>
+            <!-- Status with icon and inline edit -->
+            <div class="flex items-center mb-2">
+              <ng-container *ngIf="editingStatusIndex !== i; else statusEdit">
+                <span class="flex items-center cursor-pointer px-2 py-1 rounded text-xs font-semibold"
+                      [ngClass]="{
+                        'bg-yellow-100 text-yellow-700': book.status === 'planned',
+                        'bg-blue-100 text-blue-700': book.status === 'reading',
+                        'bg-green-100 text-green-700': book.status === 'completed'
+                      }"
+                      (click)="editingStatusIndex = i">
+                  <svg *ngIf="book.status === 'planned'" class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                  <svg *ngIf="book.status === 'reading'" class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 1.414L10.586 9.5 9.293 10.793a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                  </svg>
+                  <svg *ngIf="book.status === 'completed'" class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                  {{ book.status | titlecase }}
+                </span>
+              </ng-container>
+              <ng-template #statusEdit>
+                <select #statusSelect
+                        class="text-xs px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        [value]="book.status"
+                        (change)="onStatusChange(statusSelect.value, book)"
+                        (blur)="editingStatusIndex = null">
+                  <option value="planned">Planned</option>
+                  <option value="reading">Reading</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </ng-template>
+            </div>
+
+            <!-- Current Page (inline editable), Total Pages only editable via Edit button -->
+            <div class="text-xs text-gray-500 mb-2">
+              <ng-container *ngIf="editingCurrentPageIndex !== i; else currentPageEdit">
+                <span class="flex items-center cursor-pointer" (click)="editingCurrentPageIndex = i">
+                  <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  Page {{ book.currentPage ?? 0 }} of {{ book.pages ?? '?' }}
+                </span>
+              </ng-container>
+              <ng-template #currentPageEdit>
+                <input
+                  #currentPageInput
+                  type="number"
+                  class="w-16 text-xs px-1 py-0.5 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  [value]="book.currentPage ?? 0"
+                  min="0"
+                  [max]="book.pages ?? 9999"
+                  (keydown.enter)="onCurrentPageChange(currentPageInput.value, book)"
+                  (blur)="onCurrentPageChange(currentPageInput.value, book)"
+                  autofocus
+                />
+                <span class="ml-2 text-gray-400">of {{ book.pages ?? '?' }}</span>
+              </ng-template>
+            </div>
+
+            <!-- Editable Rating -->
+            <div class="flex items-center mb-2">
+              <ng-container *ngIf="editingRatingIndex !== i; else ratingEdit">
+                <span class="text-yellow-500 font-bold cursor-pointer flex items-center" (click)="editingRatingIndex = i">
+                  <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  {{ book.rating !== undefined ? book.rating : 'No rating' }}
+                </span>
+                <span *ngIf="book.rating !== undefined" class="text-xs text-gray-400 ml-1">/5</span>
+              </ng-container>
+              <ng-template #ratingEdit>
+                <select #ratingSelect
+                        class="text-xs px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        [value]="book.rating ?? ''"
+                        (change)="onRatingChange(ratingSelect.value, book)"
+                        (blur)="editingRatingIndex = null">
+                  <option value="">No rating</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <span class="text-xs text-gray-400 ml-1">/5</span>
+              </ng-template>
+            </div>
+
+            <!-- Notes with Inline Edit -->
+            <div class="text-xs text-gray-500 mb-4 line-clamp-3">
+              <ng-container *ngIf="editingNotesIndex !== i; else notesEdit">
+                <span
+                  class="cursor-pointer block"
+                  (click)="editingNotesIndex = i"
+                  [class.text-gray-400]="!book.notes"
+                  [class.italic]="!book.notes">
+                  {{ book.notes || 'Add notes...' }}
+                </span>
+              </ng-container>
+              <ng-template #notesEdit>
+                <textarea
+                  #notesInput
+                  class="w-full text-xs p-1 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="3"
+                  [value]="book.notes || ''"
+                  (keydown)="onNotesKeyDown($event, notesInput.value, book)"
+                  (blur)="onNotesChange(notesInput.value, book)"
+                  placeholder="Enter notes (Ctrl+Enter to save)..."></textarea>
+              </ng-template>
+            </div>
+
+            <!-- Genres (badges) -->
+            <div *ngIf="book.genres as genres" class="flex flex-wrap gap-1 mb-2 relative group">
+              <ng-container *ngFor="let genre of genres | slice:0:3">
+                <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">{{ genre }}</span>
+              </ng-container>
+              <ng-container *ngIf="genres.length > 3">
+                <span
+                  class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs cursor-pointer"
+                  (mouseenter)="hoveredGenresIndex = i"
+                  (mouseleave)="hoveredGenresIndex = null">
+                  +{{ genres.length - 3 }}
+                </span>
+                <!-- Tooltip with all genres -->
+                <div
+                  *ngIf="hoveredGenresIndex === i"
+                  class="absolute left-0 top-full mt-2 z-10 bg-white border border-gray-300 rounded p-2 text-xs shadow-lg w-64">
+                  <div class="flex flex-wrap gap-1">
+                    <span *ngFor="let genre of genres" class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">{{ genre }}</span>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full h-2 bg-gray-200 rounded mt-1">
+              <div
+                class="h-2 bg-blue-500 rounded"
+                [style.width.%]="book.pages ? (book.currentPage ?? 0) / book.pages * 100 : 0"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
+      <ng-template #noBooks>
+        <div class="text-center text-gray-400 py-12">No books found.</div>
+      </ng-template>
     </div>
-    <ng-template #noBooks>
-      <div class="text-center text-gray-400 py-12">No books found.</div>
-    </ng-template>
+
+    <!-- List View (new) -->
+    <div *ngIf="viewMode === 'list'" class="book-list">
+      <div *ngIf="books.length > 0; else noBooks" class="space-y-4">
+        <div
+          *ngFor="let book of books; let i = index"
+          class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 relative group">
+
+          <div class="flex gap-4">
+            <!-- Book Cover (smaller in list view) -->
+            <div class="flex-shrink-0">
+              <img
+                [src]="book.imageUrl || 'https://placehold.co/400x600?text=No+Cover'"
+                alt="{{ book.title }} cover"
+                class="w-16 h-24 object-cover bg-gray-100 rounded"
+                loading="lazy"
+                (error)="onImageError($event)"
+              />
+            </div>
+
+            <!-- Book Info -->
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-start mb-2">
+                <!-- Title and Author -->
+                <div class="flex-1 min-w-0 mr-4">
+                  <h3 class="text-lg font-semibold text-gray-900 truncate">{{ book.title }}</h3>
+                  <p class="text-sm text-gray-600 truncate">by {{ book.author }}</p>
+                </div>
+
+                <!-- Edit Button -->
+                <button
+                  class="p-2 rounded-lg bg-blue-600 bg-opacity-0 text-blue-600 hover:bg-opacity-100 hover:text-white transition-all duration-200 opacity-0 group-hover:opacity-100 cursor-pointer"
+                  (click)="openEditModal(book)"
+                  title="Edit Book"
+                  aria-label="Edit Book"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16.862 3.487a2.25 2.25 0 113.182 3.182l-9.193 9.193a2.25 2.25 0 01-.878.547l-3.25 1.083a.75.75 0 01-.948-.948l1.083-3.25a2.25 2.25 0 01.547-.878l9.193-9.193z" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Status, Progress, and Rating in one row -->
+              <div class="flex items-center gap-4 mb-3">
+                <!-- Status -->
+                <div class="flex items-center">
+                  <ng-container *ngIf="editingStatusIndex !== i; else statusEditList">
+                    <span class="flex items-center cursor-pointer px-2 py-1 rounded text-xs font-semibold"
+                          [ngClass]="{
+                            'bg-yellow-100 text-yellow-700': book.status === 'planned',
+                            'bg-blue-100 text-blue-700': book.status === 'reading',
+                            'bg-green-100 text-green-700': book.status === 'completed'
+                          }"
+                          (click)="editingStatusIndex = i">
+                      {{ book.status | titlecase }}
+                    </span>
+                  </ng-container>
+                  <ng-template #statusEditList>
+                    <select #statusSelect
+                            class="text-xs px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            [value]="book.status"
+                            (change)="onStatusChange(statusSelect.value, book)"
+                            (blur)="editingStatusIndex = null">
+                      <option value="planned">Planned</option>
+                      <option value="reading">Reading</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </ng-template>
+                </div>
+
+                <!-- Progress -->
+                <div class="flex items-center gap-2 flex-1">
+                  <ng-container *ngIf="editingCurrentPageIndex !== i; else currentPageEditList">
+                    <span class="text-xs text-gray-600 cursor-pointer" (click)="editingCurrentPageIndex = i">
+                      {{ book.currentPage ?? 0 }} / {{ book.pages ?? '?' }}
+                    </span>
+                  </ng-container>
+                  <ng-template #currentPageEditList>
+                    <input
+                      #currentPageInput
+                      type="number"
+                      class="w-16 text-xs px-1 py-0.5 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      [value]="book.currentPage ?? 0"
+                      min="0"
+                      [max]="book.pages ?? 9999"
+                      (keydown.enter)="onCurrentPageChange(currentPageInput.value, book)"
+                      (blur)="onCurrentPageChange(currentPageInput.value, book)"
+                      autofocus
+                    />
+                    <span class="text-xs text-gray-400">/ {{ book.pages ?? '?' }}</span>
+                  </ng-template>
+
+                  <!-- Progress Bar -->
+                  <div class="flex-1 max-w-32 h-1.5 bg-gray-200 rounded-full">
+                    <div
+                      class="h-1.5 bg-blue-500 rounded-full transition-all duration-300"
+                      [style.width.%]="book.pages ? (book.currentPage ?? 0) / book.pages * 100 : 0"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Rating -->
+                <div class="flex items-center">
+                  <ng-container *ngIf="editingRatingIndex !== i; else ratingEditList">
+                    <span class="text-yellow-500 cursor-pointer flex items-center text-sm" (click)="editingRatingIndex = i">
+                      <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      {{ book.rating !== undefined ? book.rating : '-' }}
+                    </span>
+                  </ng-container>
+                  <ng-template #ratingEditList>
+                    <select #ratingSelect
+                            class="text-xs px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            [value]="book.rating ?? ''"
+                            (change)="onRatingChange(ratingSelect.value, book)"
+                            (blur)="editingRatingIndex = null">
+                      <option value="">-</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  </ng-template>
+                </div>
+              </div>
+
+              <!-- Genres -->
+              <div *ngIf="book.genres && book.genres.length > 0" class="flex flex-wrap gap-1 mb-2">
+                <ng-container *ngFor="let genre of book.genres | slice:0:4">
+                  <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">{{ genre }}</span>
+                </ng-container>
+                <span *ngIf="book.genres.length > 4" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">
+                  +{{ book.genres.length - 4 }}
+                </span>
+              </div>
+
+              <!-- Notes (truncated in list view) -->
+              <div *ngIf="book.notes" class="text-sm text-gray-600 truncate">
+                <ng-container *ngIf="editingNotesIndex !== i; else notesEditList">
+                  <span class="cursor-pointer" (click)="editingNotesIndex = i">
+                    {{ book.notes }}
+                  </span>
+                </ng-container>
+                <ng-template #notesEditList>
+                  <input
+                    #notesInput
+                    type="text"
+                    class="w-full text-sm p-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    [value]="book.notes || ''"
+                    (keydown.enter)="onNotesChange(notesInput.value, book)"
+                    (blur)="onNotesChange(notesInput.value, book)"
+                    placeholder="Enter notes..."
+                    autofocus
+                  />
+                </ng-template>
+              </div>
+              <div *ngIf="!book.notes" class="text-sm text-gray-400 italic cursor-pointer" (click)="editingNotesIndex = i">
+                Add notes...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noBooks>
+        <div class="text-center text-gray-400 py-12">No books found.</div>
+      </ng-template>
+    </div>
 
     <!-- Before pagination -->
     <div class="border-b border-gray-200 my-4"></div>

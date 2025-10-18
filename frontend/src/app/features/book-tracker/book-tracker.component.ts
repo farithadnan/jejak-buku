@@ -7,6 +7,7 @@ import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-
 import { debounceTime, Subject } from 'rxjs';
 import { BookModalComponent } from './book-modal/book-modal.component';
 import { ToastrService } from 'ngx-toastr';
+import { StorageService } from '../../shared/services/storage.service';
 
 @Component({
   selector: 'app-book-tracker',
@@ -51,10 +52,14 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   modalMode: 'edit' | 'create' = 'create';
   editingBook: Partial<Book> = {};
 
+  // Add view mode property
+  viewMode: 'grid' | 'list' = 'grid';
+
   constructor(
     private cdr: ChangeDetectorRef,
     private bookService: BookService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private storageService: StorageService  // Add this
   ) {}
 
   get visiblePages(): (number | string)[] {
@@ -95,6 +100,12 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   }
 
   ngOnInit() {
+    // Load view mode preference using service
+    const savedViewMode = this.storageService.getItem('bookViewMode') as 'grid' | 'list';
+    if (savedViewMode) {
+      this.viewMode = savedViewMode;
+    }
+
     this.searchTerm$.pipe(debounceTime(300)).subscribe(term => {
       this.search = term;
       this.currentPage = 1;
@@ -299,5 +310,25 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   onFilterChange() {
     this.currentPage = 1;
     this.fetchBooks();
+  }
+
+  // Add method to set view mode
+  setViewMode(mode: 'grid' | 'list') {
+    this.viewMode = mode;
+    this.storageService.setItem('bookViewMode', mode);
+  }
+
+  // Update the toggleViewMode method
+  toggleViewMode() {
+    const newMode = this.viewMode === 'grid' ? 'list' : 'grid';
+    this.setViewMode(newMode);
+  }
+
+  // Add method to handle notes keydown with proper typing
+  onNotesKeyDown(event: KeyboardEvent, notes: string, book: Book) {
+      if (event.key === 'Enter' && event.ctrlKey) {
+      event.preventDefault();
+      this.onNotesChange(notes, book);
+    }
   }
 }
