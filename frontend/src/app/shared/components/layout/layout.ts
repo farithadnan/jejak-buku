@@ -12,7 +12,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/ro
 export class Layout implements OnInit {
   @Input() pageTitle: string = 'Books';
 
-  appTitle = 'Jejak Buku'; // Use this everywhere
+  appTitle = 'Jejak Buku';
 
   // Mock user observable for development
   currentUser$: Observable<any> = of({
@@ -22,7 +22,6 @@ export class Layout implements OnInit {
   });
 
   currentYear: number = new Date().getFullYear();
-
   userMenuOpen = false;
 
   constructor(
@@ -46,6 +45,10 @@ export class Layout implements OnInit {
     ).subscribe(data => {
       this.pageTitle = data['title'] || 'Books';
     });
+  }
+
+  goToHome(): void {
+    this.router.navigate(['/']);
   }
 
   toggleUserMenu(): void {
