@@ -1,7 +1,9 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book, BookService } from '../../shared/services/book.service';
+import { LoadingService } from '../../shared/services/loading.service';
+import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-spinner';
 import { debounceTime, Subject } from 'rxjs';
 import { BookModalComponent } from './book-modal/book-modal.component';
 import { ToastrService } from 'ngx-toastr';
@@ -9,12 +11,15 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-book-tracker',
   standalone: true,
-  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent],
+  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent, LoadingSpinner],
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
 export class BookTrackerComponent implements AfterViewChecked, OnInit {
-  loading = false;
+  private loadingService = inject(LoadingService);
+  loading$ = this.loadingService.loading$;
+
+  // Remove the local loading property as we're using the service now
   search = '';
   status = '';
   genreFilter = '';
@@ -104,26 +109,24 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   }
 
   fetchBooks() {
-    this.loading = true;
     const params: any = {
       page: this.currentPage,
       limit: this.pageSize,
       search: this.search,
       ...(this.status ? { status: this.status } : {})
-      // Optionally add genre filter logic here
     };
+
     this.bookService.getBooks(params).subscribe({
       next: (res) => {
         this.books = res.books;
         this.totalPages = res.totalPages;
         this.totalResults = res.totalBooks;
-        this.loading = false;
       },
       error: () => {
         this.books = [];
         this.totalPages = 1;
         this.totalResults = 0;
-        this.loading = false;
+        this.toastr.error('Failed to load books');
       }
     });
   }
@@ -179,5 +182,9 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       this.currentPage = page;
       this.fetchBooks();
     }
+  }
+
+  onImageError(event: any): void {
+    event.target.src = 'https://placehold.co/400x600?text=No+Cover';
   }
 }

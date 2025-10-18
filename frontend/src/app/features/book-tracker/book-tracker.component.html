@@ -1,5 +1,7 @@
-<div *ngIf="loading" class="flex justify-center my-4">
-  <div>Loading...</div>
+<div *ngIf="loading$ | async" class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+  <div class="bg-white rounded-lg p-6 shadow-lg">
+    <app-loading-spinner [size]="40" text="Loading books..."></app-loading-spinner>
+  </div>
 </div>
 
 <div class="max-w-7xl mx-auto px-2 sm:px-4 py-4">
@@ -31,7 +33,7 @@
               <button
                 *ngIf="search"
                 type="button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
                 (click)="search = ''; searchTerm$.next('')"
                 aria-label="Clear search"
                 style="background:transparent; border:none; padding:0; margin:0;"
@@ -60,7 +62,7 @@
           </div>
           <!-- Add Book button -->
           <div class="w-full lg:w-auto lg:ml-auto">
-            <button (click)="openCreateModal()" class="w-full lg:w-auto px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-center gap-2">
+            <button (click)="openCreateModal()" class="w-full lg:w-auto px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-center gap-2 cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
@@ -72,14 +74,14 @@
 
       <!-- Mobile Filter Button (always visible on mobile) -->
       <div class="flex sm:hidden mb-4">
-        <button class="flex-1 mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium" (click)="showFilters = true">
+        <button class="flex-1 mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium cursor-pointer" (click)="showFilters = true">
           <svg class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
           </svg>
           Filters
         </button>
-        <button class="flex-1 ml-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium flex items-center justify-center gap-1" (click)="openCreateModal()">
+        <button class="flex-1 ml-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium flex items-center justify-center gap-1 cursor-pointer" (click)="openCreateModal()">
           <span class="text-2xl leading-none">+</span>
           <span class="text-base leading-none">Add</span>
           <span class="hidden sm:inline ml-1">Book</span>
@@ -94,16 +96,18 @@
       <div
         *ngFor="let book of books; let i = index"
         class="bg-white rounded-lg shadow-md overflow-visible flex flex-col transition duration-200 hover:shadow-xl hover:-translate-y-1 hover:scale-105 relative group"      >
-        <!-- Book Image -->
+        <!-- Book Image with lazy loading -->
         <img
           [src]="book.imageUrl || 'https://placehold.co/400x600?text=No+Cover'"
           alt="{{ book.title }} cover"
           class="w-full h-64 object-cover bg-gray-100 rounded-t-lg"
+          loading="lazy"
+          (error)="onImageError($event)"
         />
 
         <!-- Edit Button (top right, only on hover, blue background and color transition) -->
         <button
-          class="absolute top-2 right-2 p-2 rounded-lg bg-blue-600 bg-opacity-80 text-white shadow transition hidden group-hover:block hover:bg-blue-800 hover:text-white hover:bg-opacity-100"
+          class="absolute top-2 right-2 p-2 rounded-lg bg-blue-600 bg-opacity-80 text-white shadow transition hidden group-hover:block hover:bg-blue-800 hover:text-white hover:bg-opacity-100 cursor-pointer"
           (click)="openEditModal(book)"
           title="Edit Book"
           style="z-index:2"
@@ -304,7 +308,7 @@
         <ul class="flex flex-wrap justify-center sm:justify-end items-center gap-2 overflow-x-auto scrollbar-hide px-1 sm:px-0">
           <li>
             <button
-              class="px-3 py-2 rounded-full bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg"
+              class="px-3 py-2 rounded-full bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg cursor-pointer"
               [disabled]="currentPage === 1"
               (click)="goToPage(currentPage - 1)"
               aria-label="Previous page"
@@ -316,7 +320,7 @@
           </li>
           <li *ngFor="let page of visiblePages">
             <button
-              class="px-2 py-1 rounded-full transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg"
+              class="px-2 py-1 rounded-full transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg cursor-pointer"
               [ngClass]="{
                 'bg-blue-600 text-white': page === currentPage,
                 'bg-gray-100 text-gray-700 hover:bg-blue-100 hover:text-blue-600': page !== currentPage
@@ -330,7 +334,7 @@
           </li>
           <li>
             <button
-              class="px-3 py-2 rounded-full bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg"
+              class="px-3 py-2 rounded-full bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-600 transition focus:ring-2 focus:ring-blue-500 text-base sm:text-lg cursor-pointer"
               [disabled]="currentPage === totalPages"
               (click)="goToPage(currentPage + 1)"
               aria-label="Next page"
@@ -380,7 +384,7 @@
   <div class="bg-white w-full rounded-t-lg p-4">
     <div class="flex justify-between items-center mb-2">
       <span class="font-semibold">Filters</span>
-      <button (click)="showFilters = false" class="text-gray-400 text-2xl">&times;</button>
+      <button (click)="showFilters = false" class="text-gray-400 text-2xl cursor-pointer">&times;</button>
     </div>
     <input
       type="text"
@@ -399,6 +403,6 @@
       <option value="">All Genres</option>
       <option *ngFor="let genre of allGenres" [value]="genre">{{ genre }}</option>
     </select>
-    <button (click)="showFilters = false; fetchBooks()" class="w-full bg-blue-600 text-white py-2 rounded-lg mt-2">Apply</button>
+    <button (click)="showFilters = false; fetchBooks()" class="w-full bg-blue-600 text-white py-2 rounded-lg mt-2 cursor-pointer">Apply</button>
   </div>
 </div>
