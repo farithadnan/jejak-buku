@@ -71,6 +71,13 @@ export class BookModalComponent implements OnInit, OnChanges {
     this.imagePreview = this.book.imageUrl || '';
   }
 
+  onGenreKeydown(event: KeyboardEvent) {
+    if (event.key === ',' || event.key === 'Enter') {
+      event.preventDefault();
+      this.addGenre();
+    }
+  }
+
   addGenre() {
     const genre = this.newGenre.trim();
     if (genre && !this.form.value.genres.includes(genre)) {

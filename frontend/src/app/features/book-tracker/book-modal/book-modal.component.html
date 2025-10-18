@@ -116,10 +116,10 @@
                 type="text"
                 [(ngModel)]="newGenre"
                 [ngModelOptions]="{standalone: true}"
-                (keydown.enter)="addGenre(); $event.preventDefault()"
-                [placeholder]="form.value.genres.length === 0 ? 'Add genre' : ''"
+                (keydown)="onGenreKeydown($event)"
+                [placeholder]="form.value.genres.length === 0 ? 'Enter genre' : ''"
                 class="border-none bg-transparent text-sm focus:outline-none"
-                style="min-width: 80px;"
+                style="min-width: 120px;"
                 name="newGenre"
                 autocomplete="off"
               />
