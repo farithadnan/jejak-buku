@@ -506,15 +506,15 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
   getSaveButtonText(): string {
     if (this.mode === 'create') {
       if (this.isFormInvalid()) {
-        return 'Fill Required Fields';
+        return 'Create';
       }
-      return 'Create Book';
+      return 'Create';
     } else {
       // Edit mode
       if (this.isFormInvalid() && this.hasRequiredFieldsTouched()) {
-        return 'Fix Errors';
+        return 'Save';
       }
-      return 'Save Changes';
+      return 'Save';
     }
   }
 }

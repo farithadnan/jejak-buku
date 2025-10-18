@@ -348,11 +348,11 @@
       <div *ngIf="books.length > 0; else noBooks" class="space-y-4">
         <div
           *ngFor="let book of books; let i = index"
-          class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 relative group cursor-pointer">
+          class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 relative">
 
           <div class="flex gap-4">
-            <!-- Book Cover (smaller in list view) -->
-            <div class="flex-shrink-0">
+            <!-- Book Cover - Hidden on mobile, visible on desktop -->
+            <div class="flex-shrink-0 hidden sm:block">
               <img
                 [src]="book.imageUrl || 'https://placehold.co/400x600?text=No+Cover'"
                 alt="{{ book.title }} cover"
@@ -364,16 +364,16 @@
 
             <!-- Book Info -->
             <div class="flex-1 min-w-0">
-              <div class="flex justify-between items-start mb-2">
+              <div class="flex justify-between items-start mb-3">
                 <!-- Title and Author -->
                 <div class="flex-1 min-w-0 mr-4">
-                  <h3 class="text-lg font-semibold text-gray-900 truncate">{{ book.title }}</h3>
-                  <p class="text-sm text-gray-600 truncate">by {{ book.author }}</p>
+                  <h3 class="text-lg font-semibold text-gray-900 line-clamp-1 leading-tight">{{ book.title }}</h3>
+                  <p class="text-sm text-gray-600 line-clamp-1 mt-0.5">by {{ book.author }}</p>
                 </div>
 
-                <!-- Edit Button -->
+                <!-- Edit Button - Always visible on mobile, hover on desktop -->
                 <button
-                  class="p-2 rounded-lg bg-blue-600 text-white transition-all duration-200 opacity-0 group-hover:opacity-100 hover:bg-blue-700 cursor-pointer"
+                  class="p-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 cursor-pointer sm:opacity-0 sm:group-hover:opacity-100"
                   (click)="openEditModal(book)"
                   title="Edit Book"
                   aria-label="Edit Book"
@@ -386,7 +386,7 @@
               </div>
 
               <!-- Status, Progress, and Rating in one row -->
-              <div class="flex items-center gap-4 mb-3">
+              <div class="flex items-center gap-3 mb-3 flex-wrap sm:flex-nowrap">
                 <!-- Status -->
                 <div class="flex items-center">
                   <ng-container *ngIf="editingStatusIndex !== i; else statusEditList">
@@ -414,29 +414,31 @@
                 </div>
 
                 <!-- Progress -->
-                <div class="flex items-center gap-2 flex-1">
+                <div class="flex items-center gap-2 flex-1 min-w-0">
                   <ng-container *ngIf="editingCurrentPageIndex !== i; else currentPageEditList">
-                    <span class="text-xs text-gray-600 cursor-pointer" (click)="editingCurrentPageIndex = i">
+                    <span class="text-xs text-gray-600 cursor-pointer whitespace-nowrap" (click)="editingCurrentPageIndex = i">
                       {{ book.currentPage ?? 0 }} / {{ book.pages ?? '?' }}
                     </span>
                   </ng-container>
                   <ng-template #currentPageEditList>
-                    <input
-                      #currentPageInput
-                      type="number"
-                      class="w-16 text-xs px-1 py-0.5 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      [value]="book.currentPage ?? 0"
-                      min="0"
-                      [max]="book.pages ?? 9999"
-                      (keydown.enter)="onCurrentPageChange(currentPageInput.value, book)"
-                      (blur)="onCurrentPageChange(currentPageInput.value, book)"
-                      autofocus
-                    />
-                    <span class="text-xs text-gray-400">/ {{ book.pages ?? '?' }}</span>
+                    <div class="flex items-center gap-1">
+                      <input
+                        #currentPageInput
+                        type="number"
+                        class="w-12 text-xs px-1 py-0.5 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        [value]="book.currentPage ?? 0"
+                        min="0"
+                        [max]="book.pages ?? 9999"
+                        (keydown.enter)="onCurrentPageChange(currentPageInput.value, book)"
+                        (blur)="onCurrentPageChange(currentPageInput.value, book)"
+                        autofocus
+                      />
+                      <span class="text-xs text-gray-400">/ {{ book.pages ?? '?' }}</span>
+                    </div>
                   </ng-template>
 
                   <!-- Progress Bar -->
-                  <div class="flex-1 max-w-32 h-1.5 bg-gray-200 rounded-full">
+                  <div class="flex-1 h-1.5 bg-gray-200 rounded-full min-w-0 hidden sm:block">
                     <div
                       class="h-1.5 bg-blue-500 rounded-full transition-all duration-300"
                       [style.width.%]="book.pages ? (book.currentPage ?? 0) / book.pages * 100 : 0"
@@ -471,28 +473,47 @@
                 </div>
               </div>
 
+              <!-- Progress Bar for Mobile (below other elements) -->
+              <div class="w-full h-2 bg-gray-200 rounded-full mb-3 sm:hidden">
+                <div
+                  class="h-2 bg-blue-500 rounded-full transition-all duration-300"
+                  [style.width.%]="book.pages ? (book.currentPage ?? 0) / book.pages * 100 : 0"
+                ></div>
+              </div>
+
               <!-- Genres -->
               <div *ngIf="book.genres && book.genres.length > 0" class="flex flex-wrap gap-1 mb-2">
-                <ng-container *ngFor="let genre of book.genres | slice:0:4">
+                <ng-container *ngFor="let genre of book.genres | slice:0:(isMobile ? 2 : 4)">
                   <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">{{ genre }}</span>
                 </ng-container>
-                <span *ngIf="book.genres.length > 4" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">
-                  +{{ book.genres.length - 4 }}
+                <span *ngIf="book.genres.length > (isMobile ? 2 : 4)" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">
+                  +{{ book.genres.length - (isMobile ? 2 : 4) }}
                 </span>
               </div>
 
-              <!-- Notes (truncated in list view) -->
-              <div *ngIf="book.notes" class="text-sm text-gray-600 truncate">
+              <!-- Notes -->
+              <div class="text-sm text-gray-600">
                 <ng-container *ngIf="editingNotesIndex !== i; else notesEditList">
-                  <span class="cursor-pointer" (click)="editingNotesIndex = i">
+                  <span
+                    *ngIf="book.notes"
+                    class="cursor-pointer line-clamp-2 sm:line-clamp-1"
+                    (click)="editingNotesIndex = i"
+                  >
                     {{ book.notes }}
+                  </span>
+                  <span
+                    *ngIf="!book.notes"
+                    class="text-gray-400 italic cursor-pointer"
+                    (click)="editingNotesIndex = i"
+                  >
+                    Add notes...
                   </span>
                 </ng-container>
                 <ng-template #notesEditList>
                   <input
                     #notesInput
                     type="text"
-                    class="w-full text-sm p-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full text-sm p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     [value]="book.notes || ''"
                     (keydown.enter)="onNotesChange(notesInput.value, book)"
                     (blur)="onNotesChange(notesInput.value, book)"
@@ -500,9 +521,6 @@
                     autofocus
                   />
                 </ng-template>
-              </div>
-              <div *ngIf="!book.notes" class="text-sm text-gray-400 italic cursor-pointer" (click)="editingNotesIndex = i">
-                Add notes...
               </div>
             </div>
           </div>
