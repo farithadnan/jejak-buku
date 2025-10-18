@@ -187,4 +187,9 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   onImageError(event: any): void {
     event.target.src = 'https://placehold.co/400x600?text=No+Cover';
   }
+
+  onFilterChange() {
+    this.currentPage = 1;
+    this.fetchBooks();
+  }
 }
