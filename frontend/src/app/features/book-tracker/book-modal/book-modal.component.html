@@ -88,12 +88,12 @@
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">Title</label>
-            <input formControlName="title" placeholder="Book title" required class="border rounded p-2 w-full text-sm" />
+            <input formControlName="title" placeholder="Enter book title" required class="border rounded p-2 w-full text-sm" />
             <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="text-xs text-red-500">Title is required.</div>
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">Author</label>
-            <input formControlName="author" placeholder="Author name" required class="border rounded p-2 w-full text-sm" />
+            <input formControlName="author" placeholder="Enter author name" required class="border rounded p-2 w-full text-sm" />
             <div *ngIf="form.get('author')?.invalid && form.get('author')?.touched" class="text-xs text-red-500">Author is required.</div>
           </div>
           <div>
@@ -155,7 +155,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">ISBN</label>
-            <input formControlName="isbn" placeholder="ISBN" class="border rounded p-2 w-full text-sm" />
+            <input formControlName="isbn" placeholder="Enter ISBN" class="border rounded p-2 w-full text-sm" />
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">Published Date</label>
@@ -168,11 +168,11 @@
         <div class="w-full md:w-1/2 flex flex-col gap-3">
           <div>
             <label class="block text-xs font-semibold mb-1">Description</label>
-            <textarea formControlName="description" placeholder="Short description" rows="2" class="border rounded p-2 w-full text-sm"></textarea>
+            <textarea formControlName="description" placeholder="Enter short description" rows="2" class="border rounded p-2 w-full text-sm"></textarea>
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">Notes</label>
-            <textarea formControlName="notes" placeholder="Personal notes" rows="2" class="border rounded p-2 w-full text-sm"></textarea>
+            <textarea formControlName="notes" placeholder="Enter personal notes" rows="2" class="border rounded p-2 w-full text-sm"></textarea>
           </div>
           <div class="flex items-center gap-2">
             <div class="flex-1">
