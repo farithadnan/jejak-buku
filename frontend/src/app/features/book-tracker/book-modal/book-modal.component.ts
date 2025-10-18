@@ -54,6 +54,9 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
   private startY = 0;
   private bodyScrollTop = 0;
 
+  // Add property
+  processingImage = false;
+
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
@@ -257,13 +260,118 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
   onImageChange(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-        this.form.patchValue({ imageUrl: reader.result as string });
+      // Validate file size (10MB limit)
+      const maxSizeInMB = 10;
+      const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+      if (file.size > maxSizeInBytes) {
+        alert(`File size must be less than ${maxSizeInMB}MB`);
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, GIF, WebP)');
+        return;
+      }
+
+      this.processingImage = true;
+
+      this.compressImage(file).then(compressedDataUrl => {
+        this.imagePreview = compressedDataUrl;
+        this.form.patchValue({ imageUrl: compressedDataUrl });
         this.markAsInteracted();
+        this.processingImage = false;
+      }).catch(error => {
+        console.error('Error compressing image:', error);
+        alert('Error processing image. Please try a different image.');
+        this.processingImage = false;
+      });
+    }
+  }
+
+  private compressImage(file: File, quality: number = 0.7, maxWidth: number = 400, maxHeight: number = 600): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          // Calculate new dimensions maintaining aspect ratio
+          let { width, height } = this.calculateNewDimensions(img.width, img.height, maxWidth, maxHeight);
+
+          canvas.width = width;
+          canvas.height = height;
+
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'));
+            return;
+          }
+
+          // Enable image smoothing for better quality
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+
+          // Draw and compress
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Try WebP first (better compression), fall back to JPEG
+          let dataUrl = canvas.toDataURL('image/webp', quality);
+
+          // Check if WebP is supported, if not use JPEG
+          if (!dataUrl.startsWith('data:image/webp')) {
+            dataUrl = canvas.toDataURL('image/jpeg', quality);
+          }
+
+          resolve(dataUrl);
+        } catch (error) {
+          reject(error);
+        }
       };
-      reader.readAsDataURL(file);
+
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  private calculateNewDimensions(originalWidth: number, originalHeight: number, maxWidth: number, maxHeight: number) {
+    let width = originalWidth;
+    let height = originalHeight;
+
+    // Calculate scaling factor
+    const widthRatio = maxWidth / originalWidth;
+    const heightRatio = maxHeight / originalHeight;
+    const ratio = Math.min(widthRatio, heightRatio);
+
+    // Only resize if image is larger than max dimensions
+    if (ratio < 1) {
+      width = Math.round(originalWidth * ratio);
+      height = Math.round(originalHeight * ratio);
+    }
+
+    return { width, height };
+  }
+
+  // Enhanced removeImage with confirmation
+  removeImage() {
+    if (this.imagePreview) {
+      this.showConfirmation({
+        title: 'Remove Cover Image?',
+        message: 'Are you sure you want to remove this book cover image?',
+        confirmText: 'Remove',
+        type: 'delete',
+        callback: () => {
+          this.imagePreview = '';
+          this.form.patchValue({ imageUrl: '' });
+          if (this.fileInput?.nativeElement) {
+            this.fileInput.nativeElement.value = '';
+          }
+          this.markAsInteracted();
+          this.hideConfirmation();
+        }
+      });
     }
   }
 
@@ -366,15 +474,6 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         control?.enable();
       }
-    }
-    this.markAsInteracted();
-  }
-
-  removeImage() {
-    this.imagePreview = '';
-    this.form.patchValue({ imageUrl: '' });
-    if (this.fileInput?.nativeElement) {
-      this.fileInput.nativeElement.value = '';
     }
     this.markAsInteracted();
   }
