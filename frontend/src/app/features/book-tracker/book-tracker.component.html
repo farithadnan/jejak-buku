@@ -376,7 +376,7 @@
   [mode]="modalMode"
   [allGenres]="allGenres"
   (save)="onModalSave($event)"
-  (cancel)="showModal = false"
+  (cancel)="onModalCancel()"
   (delete)="onModalDelete(editingBook)"
 ></app-book-modal>
 

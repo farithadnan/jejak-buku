@@ -3,6 +3,14 @@ import { Component, EventEmitter, Input, Output, OnInit, ViewChild, ElementRef, 
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Book } from '../../../shared/services/book.service';
 
+interface ConfirmAction {
+  title: string;
+  message: string;
+  confirmText: string;
+  type: 'delete' | 'discard' | 'save';
+  callback: () => void;
+}
+
 @Component({
   selector: 'app-book-modal',
   standalone: true,
@@ -27,15 +35,31 @@ export class BookModalComponent implements OnInit, OnChanges {
   unknownStartDate = false;
   unknownCompletedDate = false;
 
+  // Confirmation dialog properties
+  showConfirmDialog = false;
+  confirmAction: ConfirmAction = {
+    title: '',
+    message: '',
+    confirmText: '',
+    type: 'discard',
+    callback: () => {}
+  };
+
+  // Track if user has interacted with the form
+  hasInteracted = false;
+  private initialFormValue: any = {};
+
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.buildForm();
+    this.storeInitialFormValue();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['book'] || changes['allGenres']) {
       this.buildForm();
+      this.storeInitialFormValue();
       this.cdr.detectChanges();
     }
   }
@@ -71,6 +95,34 @@ export class BookModalComponent implements OnInit, OnChanges {
     this.imagePreview = this.book.imageUrl || '';
   }
 
+  storeInitialFormValue() {
+    // Store initial form value for comparison
+    this.initialFormValue = JSON.stringify({
+      ...this.form.value,
+      imageUrl: this.imagePreview,
+      unknownStartDate: this.unknownStartDate,
+      unknownCompletedDate: this.unknownCompletedDate
+    });
+    this.hasInteracted = false;
+  }
+
+  markAsInteracted() {
+    this.hasInteracted = true;
+  }
+
+  hasFormChanged(): boolean {
+    if (!this.hasInteracted) return false;
+
+    const currentValue = JSON.stringify({
+      ...this.form.value,
+      imageUrl: this.imagePreview,
+      unknownStartDate: this.unknownStartDate,
+      unknownCompletedDate: this.unknownCompletedDate
+    });
+
+    return this.initialFormValue !== currentValue;
+  }
+
   onGenreKeydown(event: KeyboardEvent) {
     if (event.key === ',' || event.key === 'Enter') {
       event.preventDefault();
@@ -82,6 +134,7 @@ export class BookModalComponent implements OnInit, OnChanges {
     const genre = this.newGenre.trim();
     if (genre && !this.form.value.genres.includes(genre)) {
       this.form.patchValue({ genres: [...this.form.value.genres, genre] });
+      this.markAsInteracted();
     }
     this.newGenre = '';
   }
@@ -90,6 +143,7 @@ export class BookModalComponent implements OnInit, OnChanges {
     const genres = [...this.form.value.genres];
     genres.splice(index, 1);
     this.form.patchValue({ genres });
+    this.markAsInteracted();
   }
 
   onImageChange(event: Event) {
@@ -99,6 +153,7 @@ export class BookModalComponent implements OnInit, OnChanges {
       reader.onload = () => {
         this.imagePreview = reader.result;
         this.form.patchValue({ imageUrl: reader.result as string });
+        this.markAsInteracted();
       };
       reader.readAsDataURL(file);
     }
@@ -125,8 +180,34 @@ export class BookModalComponent implements OnInit, OnChanges {
     }
   }
 
+  onCancel() {
+    if (this.hasFormChanged()) {
+      this.showConfirmation({
+        title: 'Discard Changes?',
+        message: 'You have unsaved changes. Are you sure you want to close without saving?',
+        confirmText: 'Discard',
+        type: 'discard',
+        callback: () => {
+          this.hideConfirmation();
+          this.cancel.emit();
+        }
+      });
+    } else {
+      this.cancel.emit();
+    }
+  }
+
   onDelete() {
-    this.delete.emit();
+    this.showConfirmation({
+      title: 'Delete Book?',
+      message: 'Are you sure you want to delete this book? This action cannot be undone.',
+      confirmText: 'Delete',
+      type: 'delete',
+      callback: () => {
+        this.hideConfirmation();
+        this.delete.emit();
+      }
+    });
   }
 
   setUnknownDate(field: 'startedDate' | 'completedDate', value: boolean) {
@@ -149,6 +230,7 @@ export class BookModalComponent implements OnInit, OnChanges {
         control?.enable();
       }
     }
+    this.markAsInteracted();
   }
 
   removeImage() {
@@ -157,5 +239,20 @@ export class BookModalComponent implements OnInit, OnChanges {
     if (this.fileInput?.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
+    this.markAsInteracted();
+  }
+
+  // Confirmation dialog methods
+  showConfirmation(action: ConfirmAction) {
+    this.confirmAction = action;
+    this.showConfirmDialog = true;
+  }
+
+  hideConfirmation() {
+    this.showConfirmDialog = false;
+  }
+
+  cancelConfirmation() {
+    this.hideConfirmation();
   }
 }

@@ -189,11 +189,16 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     }
   }
 
+  onModalCancel() {
+    this.showModal = false;
+  }
+
   onModalDelete(book: Partial<Book>) {
     if (book.id) {
       this.bookService.deleteBook(book.id).subscribe(() => {
         this.showModal = false;
         this.fetchBooks();
+        this.toastr.success('Book deleted successfully!');
       });
     }
   }
