@@ -1,3 +1,49 @@
 :host {
   z-index: 1000;
 }
+
+.modal-backdrop {
+  /* Ensure full coverage including mobile browser UI */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
+  width: 100vw;
+  overflow: hidden;
+}
+
+.modal-container {
+  /* Ensure modal doesn't extend beyond viewport */
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+}
+
+.modal-content {
+  /* Enable smooth scrolling */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent iOS zoom on input focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Additional mobile optimizations */
+@media screen and (max-width: 640px) {
+  .modal-container {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+}

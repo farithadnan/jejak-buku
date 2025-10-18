@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnInit, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectorRef, OnDestroy, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Book } from '../../../shared/services/book.service';
 
@@ -18,7 +18,7 @@ interface ConfirmAction {
   templateUrl: './book-modal.component.html',
   styleUrls: ['./book-modal.component.scss']
 })
-export class BookModalComponent implements OnInit, OnChanges {
+export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Partial<Book> = {};
   @Input() mode: 'edit' | 'create' = 'create';
   @Input() allGenres: string[] = [];
@@ -49,11 +49,22 @@ export class BookModalComponent implements OnInit, OnChanges {
   hasInteracted = false;
   private initialFormValue: any = {};
 
+  // Mobile scroll handling
+  modalMaxHeight = '100vh';
+  private startY = 0;
+  private bodyScrollTop = 0;
+
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.buildForm();
     this.storeInitialFormValue();
+    this.disableBodyScroll();
+    this.calculateModalHeight();
+  }
+
+  ngOnDestroy() {
+    this.enableBodyScroll();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -62,6 +73,68 @@ export class BookModalComponent implements OnInit, OnChanges {
       this.storeInitialFormValue();
       this.cdr.detectChanges();
     }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.calculateModalHeight();
+  }
+
+  private calculateModalHeight() {
+    // Use window.innerHeight for better mobile compatibility
+    const vh = window.innerHeight;
+    this.modalMaxHeight = `${Math.min(vh * 0.95, vh - 40)}px`;
+  }
+
+  private disableBodyScroll() {
+    // Store current scroll position
+    this.bodyScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Apply styles to prevent background scrolling
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${this.bodyScrollTop}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+  }
+
+  private enableBodyScroll() {
+    // Restore body scroll
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+
+    // Restore scroll position
+    window.scrollTo(0, this.bodyScrollTop);
+  }
+
+  preventBackgroundScroll(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  onContentTouchStart(event: TouchEvent) {
+    this.startY = event.touches[0].clientY;
+  }
+
+  onContentTouchMove(event: TouchEvent) {
+    const currentY = event.touches[0].clientY;
+    const modalContent = event.target as HTMLElement;
+    const scrollableElement = modalContent.closest('.modal-content') as HTMLElement;
+
+    if (!scrollableElement) return;
+
+    const isScrollingUp = currentY > this.startY;
+    const isScrollingDown = currentY < this.startY;
+    const isAtTop = scrollableElement.scrollTop === 0;
+    const isAtBottom = scrollableElement.scrollHeight - scrollableElement.scrollTop === scrollableElement.clientHeight;
+
+    // Prevent background scroll only when modal content can't scroll further
+    if ((isScrollingUp && isAtTop) || (isScrollingDown && isAtBottom)) {
+      event.preventDefault();
+    }
+
+    this.startY = currentY;
   }
 
   buildForm() {
