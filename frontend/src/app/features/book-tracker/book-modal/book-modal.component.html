@@ -1,15 +1,15 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm py-2 h-screen">
   <div class="bg-white rounded-lg shadow-lg w-full max-w-full sm:max-w-3xl p-2 sm:p-6 px-2 sm:px-8 relative max-h-[95vh] overflow-y-auto mx-2">
     <!-- Modal Header (compact, no icon, minimal padding) -->
-    <div class="flex items-center justify-between px-2 border-b border-gray-200">
+    <div class="flex items-center justify-between px-2 py-2 border-b border-gray-200">
       <h2 class="text-base font-semibold m-0">
         {{ mode === 'edit' ? 'Edit Book' : 'Add Book' }}
       </h2>
       <button
-        class="text-gray-400 hover:text-red-500 text-xl p-1 rounded-full bg-white bg-opacity-80 cursor-pointer"
+        class="text-gray-400 hover:text-red-500 text-3xl p-2 rounded-full bg-white bg-opacity-80 cursor-pointer leading-none"
         (click)="cancel.emit()"
         aria-label="Close"
-        style="z-index:10;"
+        style="z-index:10; line-height: 1;"
       >
         &times;
       </button>
