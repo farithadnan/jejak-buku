@@ -53,6 +53,6 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.9.2",
     "cross-env": "^7.0.3",
-    "dotenv-cli": "^6.1.0"
+    "dotenv-cli": "^7.3.0"
   }
 }
