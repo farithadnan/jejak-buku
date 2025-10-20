@@ -26,6 +26,8 @@ jobs:
 
       - name: Apply backend migrations
         working-directory: ./backend
+        env:
+          DATABASE_URL: ":memory:"
         run: npx drizzle-kit migrate
 
       - name: Run backend unit tests
