@@ -12,7 +12,6 @@ export interface Book {
   status: 'planned' | 'reading' | 'completed';
   rating?: number;
   notes?: string;
-  userId: number;
   imageUrl?: string;
   pages?: number;
   currentPage?: number;
@@ -24,8 +23,6 @@ export interface Book {
   completedDate?: string;
   createdAt?: string;
   updatedAt?: string;
-  createdBy?: number;
-  updatedBy?: number;
 }
 
 export interface BookListResponse {
@@ -47,7 +44,6 @@ export class BookService {
     limit?: number;
     search?: string;
     status?: 'planned' | 'reading' | 'completed';
-    userId?: number;
     genre?: string;
   }): Observable<BookListResponse> {
     this.loadingService.show();

@@ -16,28 +16,6 @@
           </svg>
         </button>
       </div>
-      <!-- User Menu -->
-      <div class="user-menu flex items-center mr-2" *ngIf="currentUser$ | async as user">
-        <button class="relative flex items-center group cursor-pointer" (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen">
-          <span class="inline-flex items-center justify-center rounded-full bg-gray-200 text-gray-700 font-bold text-base w-9 h-9 overflow-hidden">
-            <img *ngIf="user.imageUrl" [src]="user.imageUrl" alt="User" class="w-9 h-9 object-cover rounded-full" />
-            <span *ngIf="!user.imageUrl">{{ user.username[0] | uppercase }}</span>
-          </span>
-          <!-- <svg class="ml-1 h-4 w-4 text-gray-500 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 20 20" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-          </svg> -->
-        </button>
-        <div class="user-dropdown" *ngIf="userMenuOpen">
-          <button (click)="logout()" class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 mr-2 text-gray-500 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Logout
-          </button>
-          <!-- Add more dropdown items here if needed -->
-        </div>
-      </div>
     </div>
   </header>
 

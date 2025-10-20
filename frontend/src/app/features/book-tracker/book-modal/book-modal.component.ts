@@ -392,7 +392,6 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
 
       const bookData = {
         ...formValue,
-        userId: 1,
         ...(this.book.id ? { id: this.book.id } : {})
       };
       this.save.emit(bookData);

@@ -18,7 +18,6 @@ export const bookSchema = z.object({
   status: z.enum(["planned", "reading", "completed"]).default("planned"),
   rating: z.number().int().min(0).max(5).optional(),
   notes: z.string().optional(),
-  userId: z.number().int(),
   imageUrl: z.string().optional(),
   pages: z.number().int().optional(),
   currentPage: z.number().int().optional(),
@@ -30,8 +29,6 @@ export const bookSchema = z.object({
   completedDate: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
-  createdBy: z.number().int().optional(),
-  updatedBy: z.number().int().optional(),
 });
 
 // For :id param
@@ -45,7 +42,6 @@ export const bookQuerySchema = z.object({
   limit: z.string().regex(/^\d+$/, "Limit must be a number").optional(),
   search: z.string().optional(),
   status: z.enum(["planned", "reading", "completed"]).optional(),
-  userId: z.string().regex(/^\d+$/, "User ID must be a number").optional(),
   genre: z.string().optional(),
 });
 

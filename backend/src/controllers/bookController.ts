@@ -25,13 +25,11 @@ export const getBooks = async (req: Request, res: Response) => {
         const limit = parseInt(req.query.limit as string) || 10;
         const search = req.query.search as string | undefined;
         const status = req.query.status as ("planned" | "reading" | "completed") | undefined;
-        const userId = req.query.userId as string | undefined;
         const genre = req.query.genre as string | undefined; // Add this line
 
         const whereClauses = [];
         if (search) whereClauses.push(like(books.title, `%${search}%`));
         if (status) whereClauses.push(eq(books.status, status));
-        if (userId) whereClauses.push(eq(books.userId, Number(userId)));
         // Add genre filtering
         if (genre) whereClauses.push(like(books.genres, `%"${genre}"%`));
 
@@ -79,7 +77,6 @@ export const getBookById = async (req: Request, res: Response) => {
 export const createBook = async (req: Request, res: Response) => {
   try {
     const now = new Date().toISOString();
-    const userId = req.body.userId;
     // Example mapping before insert
     const bookData = {
       ...req.body,
@@ -87,8 +84,6 @@ export const createBook = async (req: Request, res: Response) => {
       genres: parseGenres(req.body.genres),
       createdAt: now,
       updatedAt: now,
-      createdBy: userId, // or req.user?.id if using auth
-      updatedBy: userId,
     };
     delete bookData.imageUrl; // remove camelCase to avoid duplicate
     const result = await db.insert(books).values(bookData).returning().get();
@@ -104,12 +99,10 @@ export const updateBook = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
     const now = new Date().toISOString();
-    const userId = req.body.userId;
     const updateData = {
       ...req.body,
       genres: parseGenres(req.body.genres),
       updatedAt: now,
-      updatedBy: userId,
     };
     const result = await db.update(books)
       .set(updateData)

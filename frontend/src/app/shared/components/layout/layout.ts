@@ -14,15 +14,7 @@ export class Layout implements OnInit {
 
   appTitle = 'Jejak Buku';
 
-  // Mock user observable for development
-  currentUser$: Observable<any> = of({
-    username: 'testuser',
-    email: 'testuser@example.com',
-    role: 'admin'
-  });
-
   currentYear: number = new Date().getFullYear();
-  userMenuOpen = false;
 
   constructor(
     private router: Router,
@@ -49,14 +41,5 @@ export class Layout implements OnInit {
 
   goToHome(): void {
     this.router.navigate(['/']);
-  }
-
-  toggleUserMenu(): void {
-    this.userMenuOpen = !this.userMenuOpen;
-  }
-
-  logout(): void {
-    // Implement logout logic
-    this.userMenuOpen = false;
   }
 }
