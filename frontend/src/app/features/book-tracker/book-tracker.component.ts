@@ -38,6 +38,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   @ViewChild('notesInput') notesInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChildren('pagesInput') pagesInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('currentPageInput') currentPageInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChild('importFile') importFile!: ElementRef<HTMLInputElement>;
 
   books: Book[] = [];
   currentPage = 1;
@@ -330,5 +331,64 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       event.preventDefault();
       this.onNotesChange(notes, book);
     }
+  }
+
+  exportBooks() {
+    this.bookService.getBooks({ limit: 10000 }).subscribe({
+      next: (res) => {
+        const dataStr = JSON.stringify(res.books, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `jejak-buku-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.toastr?.error('Failed to export books');
+      }
+    });
+  }
+
+  importBooks() {
+    this.importFile.nativeElement.value = '';
+    this.importFile.nativeElement.click();
+  }
+
+  onImportFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const importedBooks: Partial<Book>[] = JSON.parse(reader.result as string);
+        if (!Array.isArray(importedBooks)) throw new Error('Invalid backup format');
+        let importedCount = 0;
+        importedBooks.forEach(book => {
+          // Remove id if present to avoid conflicts
+          const { id, ...bookData } = book;
+          this.bookService.createBook(bookData as Book).subscribe({
+            next: () => {
+              importedCount++;
+              if (importedCount === importedBooks.length) {
+                this.fetchBooks();
+                this.toastr.success(`Imported ${importedCount} books!`);
+              }
+            },
+            error: () => {
+              this.toastr.error('Failed to import some books');
+            }
+          });
+        });
+      } catch (err) {
+        this.toastr.error('Invalid backup file');
+      }
+    };
+    reader.readAsText(file);
   }
 }
