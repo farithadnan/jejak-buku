@@ -17,6 +17,7 @@ It consists of a **TypeScript/Express/Drizzle ORM backend** and an **Angular fro
 - Database migrations with Drizzle Kit
 - Environment configuration support
 - Easily run on localhost or your local network (for mobile/PWA testing)
+- Unit tests for both frontend and backend
 
 ---
 
@@ -36,8 +37,11 @@ jejak-buku/
 │   ├── drizzle/            # Drizzle migration files and metadata
 │   └── src/
 │       ├── index.ts        # Main entry point (Express server)
-│       └── db/
-│           └── schema.ts   # Database schema definitions
+│       ├── db/
+│       │ └── schema.ts     # Database schema definitions
+│       ├── controllers/    # API controllers (with unit tests)
+│       ├── routes/         # Express routes (with unit tests)
+│       └── middleware/     # Middleware (validation, etc.)
 │
 ├── frontend/
 │   ├── package.json        # Angular dependencies and scripts
@@ -102,6 +106,11 @@ jejak-buku/
    - **Find your PC's IP address:**
      On Windows, run `ipconfig` and look for `IPv4 Address` (e.g., `192.168.1.10`).
 
+5. **Run Backend Unit Tests**
+    ```sh
+      npm test
+    ```
+
 ---
 
 ## Frontend Setup
@@ -139,6 +148,11 @@ jejak-buku/
    - Make sure your backend is running and accessible.
    - If your backend is on a different host/port, update your API URLs in the Angular service or use environments.
 
+4. **Run Frontend Unit Tests**
+  ```sh
+    ng test
+  ```
+
 ---
 
 ## Building
@@ -147,6 +161,11 @@ To build the frontend for production:
 ```sh
 cd frontend
 ng build
+```
+
+To preview the production build locally:
+```sh
+npx serve dist/frontend --single
 ```
 
 ---
@@ -159,10 +178,10 @@ ng build
   ng test
   ```
 
-- **Frontend end-to-end tests:**
+- **Backend unit tests**
   ```sh
-  cd frontend
-  ng e2e
+  cd backend
+  npm test
   ```
 
 ---
@@ -192,6 +211,8 @@ ng build
 | `npm run start:network`        | Run frontend on all network interfaces      |
 | `ng build`                     | Build the frontend for production           |
 | `ng test`                      | Run frontend unit tests                     |
+| `ng test`                      | Run frontend unit tests                     |
+| `npm test`                     | Run backend unit tests                      |
 
 ---
 

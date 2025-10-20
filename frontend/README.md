@@ -48,6 +48,12 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory.
 
+To preview the production build locally:
+
+```sh
+npx serve dist/frontend --single
+```
+
 ## Running unit tests
 
 ```bash
@@ -58,6 +64,12 @@ ng test
 
 ```bash
 ng e2e
+```
+
+## Checking test coverage
+
+```sh
+ng test --code-coverage
 ```
 
 ## Developer Notes
@@ -77,6 +89,9 @@ ng e2e
 | `npm run start:network`   | Run frontend on all network interfaces   |
 | `ng build`                | Build the frontend for production        |
 | `ng test`                 | Run unit tests                           |
+| `npx serve dist/frontend --single` | Preview production build locally        |
+| `ng test --code-coverage`          | Check test coverage                    |
+
 
 ---
 

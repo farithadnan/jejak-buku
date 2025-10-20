@@ -16,8 +16,11 @@ backend/
 ├── drizzle/           # Database migrations (keep in git)
 ├── src/
 │   └── db/
-│       └── schema.ts  # Drizzle ORM schema definitions
+│   │   └── schema.ts  # Drizzle ORM schema definitions
 │   └── index.ts       # (Entry point, Express server)
+│   └── controllers/ # API controllers (with unit tests)
+│   └── routes/ # Express routes (with unit tests)
+│   └── middleware/ # Middleware (validation, etc.)
 ├── .env               # Environment variables (do not commit)
 ├── .gitignore
 ├── drizzle.config.ts  # Drizzle Kit config
@@ -64,6 +67,11 @@ backend/
    - **Find your PC's IP address:**
      On Windows, run `ipconfig` and look for `IPv4 Address` (e.g., `192.168.1.10`).
 
+6. **Run Backend Unit Tests**
+```sh
+npm test
+```
+
 ## Developer Notes
 
 - **Switch between localhost and network easily** using the scripts above.
@@ -88,5 +96,6 @@ backend/
 | `npm run dev:network`  | Run backend on all network interfaces       |
 | `npm run generate:migration` | Generate migration from schema changes |
 | `npm run migrate`      | Apply migrations to the database            |
+| `npm test`             |	Run backend unit tests                     |
 
 ---
