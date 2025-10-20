@@ -20,4 +20,20 @@ describe('BookModalComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should mark title as required', () => {
+    component.form.get('title')?.setValue('');
+    component.form.get('title')?.markAsTouched();
+    fixture.detectChanges();
+    expect(component.form.get('title')?.invalid).toBeTrue();
+  });
+
+  it('should emit save event when form is valid and onSubmit is called', () => {
+    spyOn(component.save, 'emit');
+    component.form.get('title')?.setValue('Test Book');
+    component.form.get('author')?.setValue('Test Author');
+    component.form.get('status')?.setValue('planned');
+    component.onSubmit();
+    expect(component.save.emit).toHaveBeenCalled();
+  });
 });
