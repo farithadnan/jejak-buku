@@ -11,26 +11,42 @@ export class StorageService {
 
   setItem(key: string, value: string): void {
     if (this.isStorageAvailable()) {
-      localStorage.setItem(key, value);
+      try {
+        localStorage.setItem(key, value);
+      } catch (e) {
+        // Fail silently
+      }
     }
   }
 
   getItem(key: string): string | null {
     if (this.isStorageAvailable()) {
-      return localStorage.getItem(key);
+      try {
+        return localStorage.getItem(key);
+      } catch (e) {
+        return null;
+      }
     }
     return null;
   }
 
   removeItem(key: string): void {
     if (this.isStorageAvailable()) {
-      localStorage.removeItem(key);
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {
+        // Fail silently
+      }
     }
   }
 
   clear(): void {
     if (this.isStorageAvailable()) {
-      localStorage.clear();
+      try {
+        localStorage.clear();
+      } catch (e) {
+        // Fail silently
+      }
     }
   }
 }
