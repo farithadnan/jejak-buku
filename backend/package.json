@@ -5,13 +5,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:network": "cross-env HOST=0.0.0.0 ts-node src/index.ts",
+    "dev:localhost": "cross-env HOST=localhost ts-node src/index.ts",
+    "generate:migration": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Farith Adnan",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "better-sqlite3": "^12.2.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
     "express": "^5.1.0",
@@ -19,9 +24,17 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
+    "@types/supertest": "^6.0.3",
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.4",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
