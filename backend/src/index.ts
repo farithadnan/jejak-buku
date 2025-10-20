@@ -1,6 +1,7 @@
 import path from 'path';
 import dotenv from 'dotenv';
 import express from 'express';
+import cors from 'cors'
 
 import bookRoutes from './routes/bookRoutes';
 
@@ -11,6 +12,7 @@ const HOST = process.env.HOST || 'localhost';
 const PORT = Number(process.env.PORT) || 3000;
 const APP_URL = process.env.APP_URL || `http://localhost`;
 
+app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 
 app.use("/api/books", bookRoutes);
