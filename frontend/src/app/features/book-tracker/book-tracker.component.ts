@@ -25,6 +25,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
   status = '';
   genreFilter = '';
   showFilters = false;
+  showActionsMenu = false;
   allGenres: string[] = [];
 
   hoveredIndex: number | null = null;

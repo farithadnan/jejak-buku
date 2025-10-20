@@ -133,11 +133,16 @@
 
       <!-- Mobile Filter Button (always visible on mobile) -->
       <div class="flex sm:hidden mb-4">
-        <button class="flex-1 mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium cursor-pointer" (click)="showFilters = true">
-          <svg class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
+        <button
+          (click)="showFilters = !showFilters"
+          class="flex items-center justify-center w-full gap-1 px-4 py-2 mr-2 bg-gray-100 text-gray-800 rounded-lg font-medium hover:bg-gray-200 cursor-pointer"
+          aria-label="Filters"
+        >
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 019 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
           </svg>
-          Filters
+          <span class="text-base leading-none">Filters</span>
         </button>
         <!-- Mobile View Toggle -->
         <button
@@ -152,11 +157,51 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
           </svg>
         </button>
-        <button class="flex-1 ml-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium flex items-center justify-center gap-1 cursor-pointer" (click)="openCreateModal()">
-          <span class="text-2xl leading-none">+</span>
-          <span class="text-base leading-none">Add</span>
-          <span class="hidden sm:inline ml-1">Book</span>
-        </button>
+
+        <div class="relative">
+          <button
+            (click)="showActionsMenu = !showActionsMenu"
+            class="flex-1 px-4 py-6 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-1 cursor-pointer"
+            aria-label="Actions"
+            style="min-width: 0;">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+            </svg>
+            <span class="text-base leading-none">Actions</span>
+          </button>
+
+          <!-- Dropdown -->
+          <div *ngIf="showActionsMenu" class="absolute left-0 mt-2 bg-white shadow-lg z-50 w-34">
+            <button (click)="openCreateModal(); showActionsMenu = false"
+              class="w-full px-4 py-2 text-left text-green-600 bg-white hover:bg-green-50 flex items-center gap-2 font-medium">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+              Add Book
+            </button>
+            <button (click)="exportBooks(); showActionsMenu = false"
+              class="w-full px-4 py-2 text-left text-blue-600 bg-white hover:bg-blue-50 flex items-center gap-2 font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/>
+              </svg>
+              Export
+            </button>
+            <button (click)="importBooks(); showActionsMenu = false"
+              class="w-full px-4 py-2 text-left text-gray-600 bg-white hover:bg-gray-50 flex items-center gap-2 font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 10l-4-4m0 0l-4 4m4-4v12"/>
+              </svg>
+              Import
+              <input #importFile type="file" accept="application/json" style="display:none" (change)="onImportFile($event)">
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -662,16 +707,3 @@
     <button (click)="showFilters = false; fetchBooks()" class="w-full bg-blue-600 text-white py-2 rounded-lg mt-2 cursor-pointer">Apply</button>
   </div>
 </div>
-
-<!-- Mobile Export Button - Floating action button -->
-<button
-  (click)="exportBooks()"
-  class="fixed bottom-4 right-4 z-40 bg-blue-600 text-white rounded-full shadow-lg p-3 flex items-center justify-center sm:hidden"
-  title="Download backup of all books"
-  style="box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
->
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/>
-  </svg>
-</button>
