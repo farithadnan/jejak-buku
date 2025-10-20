@@ -6,12 +6,12 @@
        [style.max-height]="modalMaxHeight"
        (touchmove)="$event.stopPropagation()">
     <!-- Modal Header (fixed at top) -->
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 flex-shrink-0">
+    <div class="h-11 flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0">
       <h2 class="text-base font-semibold m-0">
         {{ mode === 'edit' ? 'Edit Book' : 'Add Book' }}
       </h2>
       <button
-        class="text-gray-400 hover:text-red-500 text-3xl p-2 rounded-full bg-white bg-opacity-80 cursor-pointer leading-none"
+        class="text-gray-400 hover:text-red-500 text-3xl p-1 rounded-full bg-gray-50 bg-opacity-80 cursor-pointer leading-none"
         (click)="onCancel()"
         aria-label="Close"
         style="z-index:10; line-height: 1;"
