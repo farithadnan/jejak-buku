@@ -10,10 +10,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      # Add a database service if needed (e.g., postgres, mysql)
-      # For SQLite, no service is needed
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
