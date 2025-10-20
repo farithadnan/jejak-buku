@@ -135,7 +135,7 @@
       <div class="flex sm:hidden mb-4">
         <button
           (click)="showFilters = !showFilters"
-          class="flex items-center justify-center w-full gap-1 px-4 py-2 mr-2 bg-gray-100 text-gray-800 rounded-lg font-medium hover:bg-gray-200 cursor-pointer"
+          class="flex items-center justify-center h-10 w-full gap-1 px-4 py-2 mr-2 bg-gray-100 text-gray-800 rounded-lg font-medium hover:bg-gray-200 cursor-pointer"
           aria-label="Filters"
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@
         <!-- Mobile View Toggle -->
         <button
           (click)="toggleViewMode()"
-          class="mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium cursor-pointer"
+          class="h-10 mr-2 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-medium cursor-pointer"
           [title]="viewMode === 'grid' ? 'Switch to List View' : 'Switch to Grid View'"
         >
           <svg *ngIf="viewMode === 'grid'" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,9 +161,8 @@
         <div class="relative">
           <button
             (click)="showActionsMenu = !showActionsMenu"
-            class="flex-1 px-4 py-6 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-1 cursor-pointer"
-            aria-label="Actions"
-            style="min-width: 0;">
+            class="flex h-10 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-1 cursor-pointer"
+            aria-label="Actions">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke-width="2"/>
               <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
