@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { LoadingService } from './loading.service';
+import { environment } from '../../../environments/environment';
 
 export interface Book {
   id?: number;
@@ -36,7 +37,7 @@ export interface BookListResponse {
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
-  private apiUrl = '/api/books';
+  private apiUrl = `${environment.apiUrl}/books`;
   private loadingService = inject(LoadingService);
 
   constructor(private http: HttpClient) {}
