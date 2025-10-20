@@ -33,6 +33,10 @@ ng serve --host 0.0.0.0
 
 - Make sure your backend is running and accessible (see backend README).
 - If your backend is on a different host/port, update your API URLs in the Angular service or use environments.
+- **For development:**
+  The frontend uses a proxy (`proxy.conf.json`) so you can use `/api` as the base URL in `environment.ts`.
+- **For production:**
+  Update `apiUrl` in `src/environments/environment.prod.ts` to your PC's IP (e.g., `http://192.168.1.10:5000/api`) so other devices can access the backend.
 
 ## Building
 
@@ -63,6 +67,7 @@ ng e2e
   - Use network mode and access from your phone for a real mobile experience.
 - **If you get CORS errors:**
   - Make sure your backend allows requests from your frontend's origin.
+- **Update `environment.prod.ts`** with your own backend IP address for production use.
 
 ## Useful Commands
 
