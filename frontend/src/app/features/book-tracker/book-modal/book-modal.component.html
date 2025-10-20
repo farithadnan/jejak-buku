@@ -246,8 +246,8 @@
                 class="border rounded p-2 w-full text-sm"
                 (change)="markAsInteracted()"
               >
-                <option [ngValue]="undefined">No rating</option>
-                <option *ngFor="let r of [1,2,3,4,5]" [ngValue]="r">{{ r }}</option>
+                <option [ngValue]="1">1</option>
+                <option *ngFor="let r of [2,3,4,5]" [ngValue]="r">{{ r }}</option>
               </select>
             </div>
 

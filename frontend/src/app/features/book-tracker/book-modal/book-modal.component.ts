@@ -151,9 +151,9 @@ export class BookModalComponent implements OnInit, OnChanges, OnDestroy {
       author: [this.book.author || '', [Validators.required]],
       status: [this.book.status || 'planned', [Validators.required]],
       genres: [this.book.genres ? [...this.book.genres] : [], []],
-      pages: [this.book.pages ?? '', [Validators.min(1)]],
-      currentPage: [this.book.currentPage ?? '', [Validators.min(0)]],
-      rating: [this.book.rating ?? undefined, []],
+      pages: [this.book.pages ?? 1, [Validators.min(1)]],
+      currentPage: [this.book.currentPage ?? 0, [Validators.min(0)]],
+      rating: [this.book.rating ?? 1, []],
       notes: [this.book.notes || '', []],
       description: [this.book.description || '', []],
       startedDate: [{
