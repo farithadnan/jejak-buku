@@ -8,6 +8,7 @@ This is the backend for the Jejak Buku project, using [Drizzle ORM](https://orm.
 - Database schema and migrations managed with **Drizzle Kit**
 - Environment variable support via `.env`
 - Easily run on localhost (private) or your local network (for mobile/PWA testing)
+- Docker support for containerized development
 
 ## Project Structure
 
@@ -27,6 +28,28 @@ backend/
 ```
 
 ## Setup
+
+### Docker Setup (Recommended)
+
+The easiest way to run the backend is using Docker Compose from the root directory:
+
+```sh
+cd ..
+docker-compose up --build backend
+```
+
+The backend will be accessible at `http://localhost:5000`.
+
+**Docker Configuration:**
+- Base Image: `node:20-alpine`
+- Working Directory: `/app`
+- Exposed Port: `5000`
+- Volume Mount: `./backend:/app` (for hot-reloading)
+- Named Volume: `backend-node-modules` (prevents Windows/Linux binary conflicts)
+- Auto-rebuild: `better-sqlite3` is automatically rebuilt for Alpine Linux on startup
+- Environment: Development mode with SQLite database
+
+### Manual Setup
 
 1. **Install dependencies**
    ```sh
@@ -72,6 +95,16 @@ backend/
 npm test
 ```
 
+## Docker Commands
+
+| Command                | Description                                 |
+|------------------------|---------------------------------------------|
+| `docker-compose up --build backend` | Build and start backend container |
+| `docker-compose down`  | Stop all containers                         |
+| `docker-compose logs -f backend` | View backend logs              |
+| `docker-compose exec backend sh` | Access backend container shell |
+| `docker-compose restart backend` | Restart backend container      |
+
 ## Developer Notes
 
 - **Switch between localhost and network easily** using the scripts above.
@@ -92,10 +125,11 @@ npm test
 
 | Command                | Description                                 |
 |------------------------|---------------------------------------------|
+| `docker-compose up --build backend` | Run backend with Docker      |
 | `npm run dev:localhost`| Run backend on localhost only               |
 | `npm run dev:network`  | Run backend on all network interfaces       |
 | `npm run generate:migration` | Generate migration from schema changes |
 | `npm run migrate`      | Apply migrations to the database            |
-| `npm test`             |	Run backend unit tests                     |
+| `npm test`             | Run backend unit tests                      |
 
 ---

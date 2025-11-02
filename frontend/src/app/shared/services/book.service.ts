@@ -74,7 +74,11 @@ export class BookService {
 
   updateBook(id: number, book: Partial<Book>): Observable<Book> {
     this.loadingService.show();
-    const payload = { ...book, genres: book.genres ?? [] };
+    // Only include genres if it's defined in the update payload
+    const payload: any = { ...book };
+    if ('genres' in book) {
+      payload.genres = book.genres;
+    }
     return this.http.put<Book>(`${this.apiUrl}/${id}`, payload)
       .pipe(finalize(() => this.loadingService.hide()));
   }

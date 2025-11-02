@@ -2,6 +2,30 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
 
+## Docker Setup (Recommended)
+
+The easiest way to run the frontend is using Docker Compose from the root directory:
+
+```sh
+cd ..
+docker-compose up --build frontend
+```
+
+The frontend will be accessible at `http://localhost:4200`.
+
+**Docker Configuration:**
+- Base Image: `node:20-alpine`
+- Working Directory: `/app`
+- Exposed Port: `4200`
+- Volume Mount: `./frontend:/app` (for hot-reloading)
+- Network Binding: `0.0.0.0` (accessible from host machine)
+- Environment: Development mode with API proxy to backend
+
+To run both frontend and backend together:
+```sh
+docker-compose up --build
+```
+
 ## Development server
 
 ### Localhost (private, only on your PC)
@@ -72,6 +96,16 @@ ng e2e
 ng test --code-coverage
 ```
 
+## Docker Commands
+
+| Command                | Description                                 |
+|------------------------|---------------------------------------------|
+| `docker-compose up --build frontend` | Build and start frontend container |
+| `docker-compose down`  | Stop all containers                         |
+| `docker-compose logs -f frontend` | View frontend logs              |
+| `docker-compose exec frontend sh` | Access frontend container shell |
+| `docker-compose restart frontend` | Restart frontend container      |
+
 ## Developer Notes
 
 - **Switch between localhost and network easily** using the scripts above.
@@ -85,6 +119,7 @@ ng test --code-coverage
 
 | Command                | Description                                 |
 |------------------------|---------------------------------------------|
+| `docker-compose up --build frontend` | Run frontend with Docker       |
 | `npm run start:localhost` | Run frontend on localhost only           |
 | `npm run start:network`   | Run frontend on all network interfaces   |
 | `ng build`                | Build the frontend for production        |

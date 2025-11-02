@@ -392,4 +392,10 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     };
     reader.readAsText(file);
   }
+
+  onGenreClick(genre: string) {
+    this.genreFilter = genre;
+    this.currentPage = 1;
+    this.fetchBooks();
+  }
 }
