@@ -21,11 +21,10 @@ describe('Layout', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call goToHome when logo button is clicked', () => {
-    spyOn(component, 'goToHome');
-    const button = fixture.nativeElement.querySelector('.logo-container button');
-    button.click();
-    expect(component.goToHome).toHaveBeenCalled();
+  it('should navigate to home when logo is clicked', () => {
+    const logoLink = fixture.nativeElement.querySelector('.logo-container a');
+    expect(logoLink).toBeTruthy();
+    expect(logoLink.getAttribute('routerLink')).toBe('/');
   });
 
   it('should display current year and app title in footer', () => {
