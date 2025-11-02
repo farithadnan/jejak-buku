@@ -64,6 +64,33 @@ jejak-buku/
 
 - Node.js (v18+ recommended)
 - npm or yarn
+- Docker and Docker Compose (optional, for containerized development)
+
+---
+
+## Docker Setup (Recommended)
+
+The easiest way to run the project is using Docker Compose:
+
+1. **Start the containers**
+   ```sh
+   docker-compose up --build
+
+   # Start in background
+   docker-compose up -d
+
+   # View logs
+   docker-compose logs -f
+   ```
+
+2. **Access the application**
+   - Frontend: [http://localhost:4200](http://localhost:4200)
+   - Backend API: [http://localhost:5000](http://localhost:5000)
+
+3. **Stop the containers**
+   ```sh
+   docker-compose down
+   ```
 
 ---
 
@@ -157,6 +184,15 @@ jejak-buku/
 
 ## Building
 
+### Docker Production Build
+
+To build production-ready Docker images:
+```sh
+docker-compose build
+```
+
+### Frontend Production Build
+
 To build the frontend for production:
 ```sh
 cd frontend
@@ -186,6 +222,29 @@ npx serve dist/frontend --single
 
 ---
 
+## Troubleshooting
+
+### Docker Issues
+
+- **"Docker is not running" error:**
+  - Make sure Docker Desktop is running on your machine
+  - On Windows, check that the Docker service is started
+
+- **better-sqlite3 errors in backend:**
+  - This usually happens when node_modules from Windows are mounted into Linux container
+  - Solution: Rebuild the container with `docker-compose up --build`
+  - The Dockerfile will automatically rebuild better-sqlite3 for Alpine Linux
+
+- **Frontend "package.json not found" error:**
+  - Ensure the WORKDIR in Dockerfile matches the volume mount path
+  - Both should use `/app` as the working directory
+
+- **Port already in use:**
+  - Check if another service is using ports 5000 or 4200
+  - Stop the conflicting service or change ports in docker-compose.yml
+
+---
+
 ## Developer Notes
 
 - **Switch between localhost and network easily** using the scripts above.
@@ -203,6 +262,9 @@ npx serve dist/frontend --single
 
 | Command                        | Description                                 |
 |--------------------------------|---------------------------------------------|
+| `docker-compose up --build`    | Start all services with Docker              |
+| `docker-compose down`          | Stop all Docker services                    |
+| `docker-compose logs -f`       | View logs from all services                 |
 | `npm run dev:localhost`        | Run backend on localhost only               |
 | `npm run dev:network`          | Run backend on all network interfaces       |
 | `npm run generate:migration`   | Generate migration from schema changes      |
@@ -210,7 +272,6 @@ npx serve dist/frontend --single
 | `npm run start:localhost`      | Run frontend on localhost only              |
 | `npm run start:network`        | Run frontend on all network interfaces      |
 | `ng build`                     | Build the frontend for production           |
-| `ng test`                      | Run frontend unit tests                     |
 | `ng test`                      | Run frontend unit tests                     |
 | `npm test`                     | Run backend unit tests                      |
 
