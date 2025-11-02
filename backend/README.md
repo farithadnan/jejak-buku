@@ -45,6 +45,8 @@ The backend will be accessible at `http://localhost:5000`.
 - Working Directory: `/app`
 - Exposed Port: `5000`
 - Volume Mount: `./backend:/app` (for hot-reloading)
+- Named Volume: `backend-node-modules` (prevents Windows/Linux binary conflicts)
+- Auto-rebuild: `better-sqlite3` is automatically rebuilt for Alpine Linux on startup
 - Environment: Development mode with SQLite database
 
 ### Manual Setup

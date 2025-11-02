@@ -18,6 +18,7 @@ The frontend will be accessible at `http://localhost:4200`.
 - Working Directory: `/app`
 - Exposed Port: `4200`
 - Volume Mount: `./frontend:/app` (for hot-reloading)
+- Network Binding: `0.0.0.0` (accessible from host machine)
 - Environment: Development mode with API proxy to backend
 
 To run both frontend and backend together:

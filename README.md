@@ -83,6 +83,8 @@ The easiest way to run the project is using Docker Compose:
    docker-compose logs -f
    ```
 
+   **Note:** First startup will take a few minutes as dependencies are installed inside the containers.
+
 2. **Access the application**
    - Frontend: [http://localhost:4200](http://localhost:4200)
    - Backend API: [http://localhost:5000](http://localhost:5000)
@@ -91,6 +93,12 @@ The easiest way to run the project is using Docker Compose:
    ```sh
    docker-compose down
    ```
+
+**Docker Features:**
+- 🔄 Hot-reloading enabled for both frontend and backend
+- 📦 Dependencies installed inside containers (no conflicts with host OS)
+- 🗄️ SQLite database with automatic better-sqlite3 rebuild for Linux
+- 🌐 Network accessible from host machine
 
 ---
 
