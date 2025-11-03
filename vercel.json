@@ -1,6 +1,8 @@
 {
   "buildCommand": "cd frontend && npm ci --legacy-peer-deps && npm run build",
   "outputDirectory": "frontend/dist/frontend/browser",
+  "installCommand": "echo 'Skipping root install'",
+  "ignoreCommand": "bash -c 'if [ \"$VERCEL_GIT_COMMIT_REF\" != \"demo\" ]; then echo \"Skipping build for branch $VERCEL_GIT_COMMIT_REF\" && exit 0; else exit 1; fi'",
   "framework": null,
   "rewrites": [
     {
