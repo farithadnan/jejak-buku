@@ -23,7 +23,7 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit, OnDestroy
   loading$ = this.loadingService.loading$;
 
   // Tab management
-  activeTab: 'books' | 'statistics' = 'books';
+  activeTab: 'dashboard' | 'books' | 'statistics' = 'dashboard';
 
   // Remove the local loading property as we're using the service now
   search = '';
@@ -186,7 +186,14 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit, OnDestroy
       case 't':
         if (event.ctrlKey || event.metaKey) {
           event.preventDefault();
-          this.activeTab = this.activeTab === 'books' ? 'statistics' : 'books';
+          // 3-way tab toggle: Dashboard → Books → Statistics → Dashboard
+          if (this.activeTab === 'dashboard') {
+            this.activeTab = 'books';
+          } else if (this.activeTab === 'books') {
+            this.activeTab = 'statistics';
+          } else {
+            this.activeTab = 'dashboard';
+          }
         }
         break;
       case 'v':

@@ -9,6 +9,13 @@
   <div class="bg-white rounded-t-lg shadow-md border-b border-gray-200">
     <div class="flex">
       <button
+        (click)="activeTab = 'dashboard'"
+        [class.active-tab]="activeTab === 'dashboard'"
+        class="tab-button">
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">Dashboard</span>
+      </button>
+      <button
         (click)="activeTab = 'books'"
         [class.active-tab]="activeTab === 'books'"
         class="tab-button">
@@ -19,14 +26,15 @@
         (click)="activeTab = 'statistics'"
         [class.active-tab]="activeTab === 'statistics'"
         class="tab-button">
-        <span class="tab-icon">📊</span>
+        <span class="tab-icon">📈</span>
         <span class="tab-text">Statistics</span>
       </button>
     </div>
   </div>
 
-  <!-- BOOKS TAB CONTENT -->
-  <div *ngIf="activeTab === 'books'" class="bg-white p-4 sm:p-8 shadow-md rounded-b-lg">
+  <!-- DASHBOARD TAB CONTENT -->
+  <div *ngIf="activeTab === 'dashboard'" class="bg-white p-4 sm:p-8 shadow-md rounded-b-lg">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Reading Dashboard</h1>
 
     <!-- Currently Reading Section -->
     <div *ngIf="currentlyReading.length > 0" class="mb-6">
@@ -115,6 +123,19 @@
       </div>
     </div>
 
+    <!-- Empty State -->
+    <div *ngIf="currentlyReading.length === 0 && recentlyCompleted.length === 0" class="text-center py-12">
+      <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+      <p class="text-gray-600 mb-2">No reading activity yet</p>
+      <p class="text-sm text-gray-500">Start tracking your books to see your dashboard</p>
+    </div>
+  </div>
+
+  <!-- BOOKS TAB CONTENT -->
+  <div *ngIf="activeTab === 'books'" class="bg-white p-4 sm:p-8 shadow-md rounded-b-lg">
+
     <!-- Keyboard Shortcuts Hint (Desktop only) -->
     <div class="hidden lg:flex items-center justify-end mb-3 text-xs text-gray-500 gap-4">
       <span class="flex items-center gap-1">
@@ -129,6 +150,10 @@
         <kbd class="px-2 py-1 bg-gray-100 border border-gray-300 rounded">←</kbd>
         <kbd class="px-2 py-1 bg-gray-100 border border-gray-300 rounded">→</kbd>
         <span>Navigate Pages</span>
+      </span>
+      <span class="flex items-center gap-1">
+        <kbd class="px-2 py-1 bg-gray-100 border border-gray-300 rounded">Ctrl+T</kbd>
+        <span>Switch Tabs</span>
       </span>
       <span class="flex items-center gap-1">
         <kbd class="px-2 py-1 bg-gray-100 border border-gray-300 rounded">Esc</kbd>
