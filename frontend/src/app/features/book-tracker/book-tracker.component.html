@@ -5,7 +5,28 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-2 sm:px-4 py-4">
-  <div class="bg-white p-4 sm:p-8 shadow-md rounded-lg">
+  <!-- TAB NAVIGATION -->
+  <div class="bg-white rounded-t-lg shadow-md border-b border-gray-200">
+    <div class="flex">
+      <button 
+        (click)="activeTab = 'books'" 
+        [class.active-tab]="activeTab === 'books'"
+        class="tab-button">
+        <span class="tab-icon">📚</span>
+        <span class="tab-text">My Books</span>
+      </button>
+      <button 
+        (click)="activeTab = 'statistics'" 
+        [class.active-tab]="activeTab === 'statistics'"
+        class="tab-button">
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">Statistics</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- BOOKS TAB CONTENT -->
+  <div *ngIf="activeTab === 'books'" class="bg-white p-4 sm:p-8 shadow-md rounded-b-lg">
     <!-- Search & filter controls -->
     <div class="mb-3">
       <!-- Desktop-only filter/search bar -->
@@ -677,6 +698,11 @@
         </select>
       </div>
     </div>
+  </div>
+
+  <!-- STATISTICS TAB CONTENT -->
+  <div *ngIf="activeTab === 'statistics'" class="bg-white p-4 sm:p-8 shadow-md rounded-b-lg">
+    <app-statistics></app-statistics>
   </div>
 </div>
 

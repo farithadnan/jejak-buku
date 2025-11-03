@@ -8,17 +8,21 @@ import { debounceTime, Subject } from 'rxjs';
 import { BookModalComponent } from './book-modal/book-modal.component';
 import { ToastrService } from 'ngx-toastr';
 import { StorageService } from '../../shared/services/storage.service';
+import { StatisticsComponent } from '../statistics/statistics.component';
 
 @Component({
   selector: 'app-book-tracker',
   standalone: true,
-  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent, LoadingSpinner],
+  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent, LoadingSpinner, StatisticsComponent],
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
 export class BookTrackerComponent implements AfterViewChecked, OnInit {
   private loadingService = inject(LoadingService);
   loading$ = this.loadingService.loading$;
+
+  // Tab management
+  activeTab: 'books' | 'statistics' = 'books';
 
   // Remove the local loading property as we're using the service now
   search = '';

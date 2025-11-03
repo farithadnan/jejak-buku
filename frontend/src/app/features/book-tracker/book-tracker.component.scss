@@ -1,3 +1,59 @@
+// TAB NAVIGATION STYLES
+.tab-button {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+
+  &.active-tab {
+    color: #2563eb;
+    background-color: white;
+    border-bottom-color: #2563eb;
+  }
+}
+
+.tab-icon {
+  font-size: 1.25rem;
+}
+
+.tab-text {
+  display: none;
+  @media (min-width: 640px) {
+    display: inline;
+  }
+}
+
+// Mobile: Show text always
+@media (max-width: 639px) {
+  .tab-button {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .tab-text {
+    display: inline;
+  }
+  
+  .tab-icon {
+    font-size: 1.1rem;
+  }
+}
+
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;

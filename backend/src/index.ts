@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors'
 
 import bookRoutes from './routes/bookRoutes';
+import statisticsRoutes from './routes/statisticsRoutes';
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 
 app.use("/api/books", bookRoutes);
+app.use("/api/statistics", statisticsRoutes);
 
 app.listen(PORT, HOST, () => {
   console.log(`Server running on http://${HOST}:${PORT}`);

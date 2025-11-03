@@ -1,0 +1,186 @@
+<div class="statistics-container max-w-7xl mx-auto px-2 sm:px-4 py-4">
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="flex items-center justify-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Statistics Content -->
+  <div *ngIf="!(loading$ | async) && stats" class="space-y-6">
+    
+    <!-- 📊 SUMMARY CARDS -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      <!-- Total Books -->
+      <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value">{{ stats.totalBooks }}</div>
+        <div class="stat-label">Total Books</div>
+      </div>
+
+      <!-- Completed -->
+      <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white">
+        <div class="stat-icon">✓</div>
+        <div class="stat-value">{{ stats.booksByStatus.completed }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+
+      <!-- Pages Read -->
+      <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+        <div class="stat-icon">📖</div>
+        <div class="stat-value">{{ stats.totalPagesRead | number }}</div>
+        <div class="stat-label">Pages Read</div>
+      </div>
+
+      <!-- Average Rating -->
+      <div class="stat-card bg-gradient-to-br from-yellow-500 to-yellow-600 text-white">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value">{{ stats.averageRating | number:'1.1-1' }}</div>
+        <div class="stat-label">Avg Rating</div>
+      </div>
+    </div>
+
+    <!-- 📈 CHARTS SECTION -->
+    <div class="grid md:grid-cols-2 gap-4">
+      
+      <!-- Status Breakdown -->
+      <div class="chart-card">
+        <h3 class="chart-title">📚 Reading Status</h3>
+        <div class="space-y-3">
+          <!-- Completed -->
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-label">Completed</span>
+              <span class="status-count">{{ stats.booksByStatus.completed }} books</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-green-500" [style.width.%]="getCompletionPercentage()"></div>
+            </div>
+            <span class="status-percent">{{ getCompletionPercentage() }}%</span>
+          </div>
+
+          <!-- Reading -->
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-label">Reading</span>
+              <span class="status-count">{{ stats.booksByStatus.reading }} books</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-blue-500" [style.width.%]="getReadingPercentage()"></div>
+            </div>
+            <span class="status-percent">{{ getReadingPercentage() }}%</span>
+          </div>
+
+          <!-- Planned -->
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-label">Planned</span>
+              <span class="status-count">{{ stats.booksByStatus.planned }} books</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-gray-400" 
+                   [style.width.%]="100 - getCompletionPercentage() - getReadingPercentage()"></div>
+            </div>
+            <span class="status-percent">{{ 100 - getCompletionPercentage() - getReadingPercentage() }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Trend -->
+      <div class="chart-card">
+        <h3 class="chart-title">📅 Last 6 Months</h3>
+        <div class="monthly-chart">
+          <div *ngFor="let month of stats.monthlyTrend" class="month-bar-container">
+            <div class="month-bar-wrapper">
+              <div class="month-bar bg-gradient-to-t from-blue-500 to-blue-400" 
+                   [style.height.%]="getMonthBarHeight(month.completed)"
+                   [title]="month.completed + ' books'">
+              </div>
+            </div>
+            <div class="month-count">{{ month.completed }}</div>
+            <div class="month-label">{{ month.month }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎯 DETAILED BREAKDOWN -->
+    <div class="grid md:grid-cols-2 gap-4">
+      
+      <!-- Top Genres -->
+      <div class="detail-card">
+        <h3 class="detail-title">🎭 Top Genres</h3>
+        <div class="space-y-3">
+          <div *ngFor="let genre of stats.topGenres" class="genre-row">
+            <div class="genre-info">
+              <span class="genre-name">{{ genre.genre || 'No Genre' }}</span>
+              <span class="genre-count">{{ genre.count }} books</span>
+            </div>
+            <div class="genre-bar-container">
+              <div class="genre-bar bg-gradient-to-r from-indigo-400 to-indigo-500" 
+                   [style.width.%]="getGenreBarWidth(genre.count)">
+              </div>
+            </div>
+          </div>
+          <div *ngIf="stats.topGenres.length === 0" class="empty-state">
+            No genres tracked yet
+          </div>
+        </div>
+      </div>
+
+      <!-- This Year Progress -->
+      <div class="detail-card">
+        <h3 class="detail-title">🎯 Reading Progress</h3>
+        <div class="space-y-4">
+          <!-- This Month -->
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">This Month</span>
+              <span class="progress-value text-blue-600 font-bold">{{ stats.thisMonthCompleted }}</span>
+            </div>
+            <div class="progress-subtitle">books completed</div>
+          </div>
+
+          <!-- This Year -->
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">This Year</span>
+              <span class="progress-value text-green-600 font-bold">{{ stats.thisYearCompleted }}</span>
+            </div>
+            <div class="progress-subtitle">books completed</div>
+          </div>
+
+          <!-- Separator -->
+          <div class="border-t border-gray-200 my-3"></div>
+
+          <!-- Quick Insight -->
+          <div class="insight-box" *ngIf="stats.thisYearCompleted > 0">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text">
+              <div class="font-semibold text-gray-900">Keep it up!</div>
+              <div class="text-sm text-gray-600">
+                You're averaging {{ getBooksPerMonth() | number:'1.0-1' }} books per month this year
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-box" *ngIf="stats.thisYearCompleted === 0">
+            <div class="insight-icon">📚</div>
+            <div class="insight-text">
+              <div class="font-semibold text-gray-900">Start your journey!</div>
+              <div class="text-sm text-gray-600">
+                Complete your first book to see your progress
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!(loading$ | async) && !stats" class="empty-container">
+    <div class="empty-icon">📊</div>
+    <h3 class="empty-title">No Statistics Available</h3>
+    <p class="empty-text">Start adding books to see your reading statistics!</p>
+  </div>
+</div>
