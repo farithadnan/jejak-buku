@@ -13,19 +13,19 @@ export interface ReadingStatistics {
   };
   totalPagesRead: number;
   averageRating: number;
-  
+
   // Genre distribution
   topGenres: {
     genre: string;
     count: number;
   }[];
-  
+
   // Monthly reading trend (last 6 months)
   monthlyTrend: {
     month: string;
     completed: number;
   }[];
-  
+
   // Recent achievements
   thisMonthCompleted: number;
   thisYearCompleted: number;

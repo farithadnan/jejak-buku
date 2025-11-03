@@ -11,7 +11,7 @@ describe('StatisticsComponent', () => {
 
   beforeEach(async () => {
     statisticsServiceSpy = jasmine.createSpyObj('StatisticsService', ['getStatistics']);
-    
+
     await TestBed.configureTestingModule({
       imports: [StatisticsComponent],
       providers: [
@@ -41,7 +41,7 @@ describe('StatisticsComponent', () => {
     };
 
     statisticsServiceSpy.getStatistics.and.returnValue(of(mockStats));
-    
+
     component.ngOnInit();
 
     expect(component.stats).toEqual(mockStats);

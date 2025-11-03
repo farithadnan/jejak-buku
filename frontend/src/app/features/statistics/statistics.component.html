@@ -6,7 +6,7 @@
 
   <!-- Statistics Content -->
   <div *ngIf="!(loading$ | async) && stats" class="space-y-6">
-    
+
     <!-- 📊 SUMMARY CARDS -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
       <!-- Total Books -->
@@ -40,7 +40,7 @@
 
     <!-- 📈 CHARTS SECTION -->
     <div class="grid md:grid-cols-2 gap-4">
-      
+
       <!-- Status Breakdown -->
       <div class="chart-card">
         <h3 class="chart-title">📚 Reading Status</h3>
@@ -76,7 +76,7 @@
               <span class="status-count">{{ stats.booksByStatus.planned }} books</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill bg-gray-400" 
+              <div class="progress-fill bg-gray-400"
                    [style.width.%]="100 - getCompletionPercentage() - getReadingPercentage()"></div>
             </div>
             <span class="status-percent">{{ 100 - getCompletionPercentage() - getReadingPercentage() }}%</span>
@@ -90,7 +90,7 @@
         <div class="monthly-chart">
           <div *ngFor="let month of stats.monthlyTrend" class="month-bar-container">
             <div class="month-bar-wrapper">
-              <div class="month-bar bg-gradient-to-t from-blue-500 to-blue-400" 
+              <div class="month-bar bg-gradient-to-t from-blue-500 to-blue-400"
                    [style.height.%]="getMonthBarHeight(month.completed)"
                    [title]="month.completed + ' books'">
               </div>
@@ -104,7 +104,7 @@
 
     <!-- 🎯 DETAILED BREAKDOWN -->
     <div class="grid md:grid-cols-2 gap-4">
-      
+
       <!-- Top Genres -->
       <div class="detail-card">
         <h3 class="detail-title">🎭 Top Genres</h3>
@@ -115,7 +115,7 @@
               <span class="genre-count">{{ genre.count }} books</span>
             </div>
             <div class="genre-bar-container">
-              <div class="genre-bar bg-gradient-to-r from-indigo-400 to-indigo-500" 
+              <div class="genre-bar bg-gradient-to-r from-indigo-400 to-indigo-500"
                    [style.width.%]="getGenreBarWidth(genre.count)">
               </div>
             </div>

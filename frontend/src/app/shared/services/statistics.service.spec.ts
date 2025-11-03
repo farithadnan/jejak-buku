@@ -9,7 +9,7 @@ describe('StatisticsService', () => {
 
   beforeEach(() => {
     httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
-    
+
     TestBed.configureTestingModule({
       providers: [
         StatisticsService,

@@ -17,7 +17,7 @@ export const getStatistics = async (req: Request, res: Response) => {
   try {
     // 1. Total books and by status
     const allBooks = await db.select().from(books).all();
-    
+
     const totalBooks = allBooks.length;
     const booksByStatus = {
       planned: allBooks.filter(b => b.status === 'planned').length,
@@ -55,12 +55,12 @@ export const getStatistics = async (req: Request, res: Response) => {
     // 5. Monthly trend (last 6 months)
     const now = new Date();
     const monthlyTrend = [];
-    
+
     for (let i = 5; i >= 0; i--) {
       const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1).toISOString();
       const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0, 23, 59, 59).toISOString();
-      
+
       const completedInMonth = allBooks.filter(book => {
         if (book.status !== 'completed' || !book.completedDate) return false;
         return book.completedDate >= monthStart && book.completedDate <= monthEnd;
