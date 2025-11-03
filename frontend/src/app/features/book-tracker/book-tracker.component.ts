@@ -1,9 +1,10 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewChecked, QueryList, ViewChildren, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Book, BookService } from '../../shared/services/book.service';
 import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-spinner';
+import { BookSkeletonComponent } from '../../shared/components/book-skeleton/book-skeleton.component';
 import { debounceTime, Subject } from 'rxjs';
 import { BookModalComponent } from './book-modal/book-modal.component';
 import { ToastrService } from 'ngx-toastr';
@@ -13,11 +14,11 @@ import { StatisticsComponent } from '../statistics/statistics.component';
 @Component({
   selector: 'app-book-tracker',
   standalone: true,
-  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent, LoadingSpinner, StatisticsComponent],
+  imports: [CommonModule, FormsModule, TitleCasePipe, BookModalComponent, LoadingSpinner, BookSkeletonComponent, StatisticsComponent],
   templateUrl: './book-tracker.component.html',
   styleUrls: ['./book-tracker.component.scss']
 })
-export class BookTrackerComponent implements AfterViewChecked, OnInit {
+export class BookTrackerComponent implements AfterViewChecked, OnInit, OnDestroy {
   private loadingService = inject(LoadingService);
   loading$ = this.loadingService.loading$;
 
@@ -60,6 +61,15 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
 
   // Add view mode property
   viewMode: 'grid' | 'list' = 'grid';
+
+  // Image zoom
+  zoomedImageUrl: string | null = null;
+
+  // Recently completed books
+  recentlyCompleted: Book[] = [];
+
+  // Currently reading books
+  currentlyReading: Book[] = [];
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -123,6 +133,73 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
 
     // Fetch books on initial load
     this.fetchBooks();
+
+    // Fetch recently completed books
+    this.fetchRecentlyCompleted();
+
+    // Fetch currently reading books
+    this.fetchCurrentlyReading();
+
+    // Setup keyboard shortcuts
+    this.setupKeyboardShortcuts();
+  }
+
+  ngOnDestroy() {
+    // Clean up keyboard listener
+    document.removeEventListener('keydown', this.handleKeyboardShortcut);
+  }
+
+  private handleKeyboardShortcut = (event: KeyboardEvent) => {
+    // Ignore if user is typing in an input/textarea
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+      return;
+    }
+
+    switch(event.key.toLowerCase()) {
+      case 'n':
+        event.preventDefault();
+        this.openCreateModal();
+        break;
+      case 'escape':
+        event.preventDefault();
+        if (this.zoomedImageUrl) {
+          this.closeZoom();
+        } else if (this.showModal) {
+          this.onModalCancel();
+        } else if (this.showFilters) {
+          this.showFilters = false;
+        }
+        break;
+      case 'arrowright':
+        if (!this.showModal && this.currentPage < this.totalPages) {
+          event.preventDefault();
+          this.goToPage(this.currentPage + 1);
+        }
+        break;
+      case 'arrowleft':
+        if (!this.showModal && this.currentPage > 1) {
+          event.preventDefault();
+          this.goToPage(this.currentPage - 1);
+        }
+        break;
+      case 't':
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault();
+          this.activeTab = this.activeTab === 'books' ? 'statistics' : 'books';
+        }
+        break;
+      case 'v':
+        if (!this.showModal) {
+          event.preventDefault();
+          this.toggleViewMode();
+        }
+        break;
+    }
+  }
+
+  private setupKeyboardShortcuts() {
+    document.addEventListener('keydown', this.handleKeyboardShortcut);
   }
 
   fetchBooks() {
@@ -146,6 +223,28 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
         this.totalPages = 1;
         this.totalResults = 0;
         this.toastr.error('Failed to load books');
+      }
+    });
+  }
+
+  private fetchRecentlyCompleted() {
+    this.bookService.getRecentlyCompleted(10).subscribe({
+      next: (res) => {
+        this.recentlyCompleted = res.books;
+      },
+      error: (err) => {
+        console.error('Error fetching recently completed books:', err);
+      }
+    });
+  }
+
+  private fetchCurrentlyReading() {
+    this.bookService.getCurrentlyReading().subscribe({
+      next: (res) => {
+        this.currentlyReading = res.books;
+      },
+      error: (err) => {
+        console.error('Error fetching currently reading books:', err);
       }
     });
   }
@@ -196,12 +295,16 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
         this.showModal = false;
         this.fetchBooks();
         this.toastr.success('Book created successfully!');
+        this.fetchRecentlyCompleted(); // Refresh recently completed
+        this.fetchCurrentlyReading(); // Refresh currently reading
       });
     } else if (this.modalMode === 'edit' && book.id) {
       this.bookService.updateBook(book.id, book).subscribe(() => {
         this.showModal = false;
         this.fetchBooks();
         this.toastr.success('Book updated successfully!');
+        this.fetchRecentlyCompleted(); // Refresh recently completed
+        this.fetchCurrentlyReading(); // Refresh currently reading
       });
     }
   }
@@ -216,6 +319,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
         this.showModal = false;
         this.fetchBooks();
         this.toastr.success('Book deleted successfully!');
+        this.fetchRecentlyCompleted(); // Refresh recently completed
+        this.fetchCurrentlyReading(); // Refresh currently reading
       });
     }
   }
@@ -226,6 +331,8 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
       this.bookService.updateBook(book.id, { status: book.status }).subscribe({
         next: () => {
           this.toastr.success('Status updated successfully!');
+          this.fetchRecentlyCompleted(); // Refresh recently completed
+          this.fetchCurrentlyReading(); // Refresh currently reading
           this.editingStatusIndex = null;
         },
         error: () => {
@@ -401,5 +508,16 @@ export class BookTrackerComponent implements AfterViewChecked, OnInit {
     this.genreFilter = genre;
     this.currentPage = 1;
     this.fetchBooks();
+  }
+
+  // Image zoom methods
+  zoomImage(imageUrl: string | null | undefined) {
+    if (imageUrl) {
+      this.zoomedImageUrl = imageUrl;
+    }
+  }
+
+  closeZoom() {
+    this.zoomedImageUrl = null;
   }
 }

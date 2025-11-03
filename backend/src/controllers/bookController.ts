@@ -3,7 +3,7 @@ import { books } from '../db/schema'
 import Database from 'better-sqlite3';
 import { Request, Response } from 'express';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { eq, and, like, count } from 'drizzle-orm';
+import { eq, and, like, count, desc } from 'drizzle-orm';
 
 const sqlite = new Database(process.env.DATABASE_URL!);
 const db = drizzle(sqlite);
@@ -26,6 +26,7 @@ export const getBooks = async (req: Request, res: Response) => {
         const search = req.query.search as string | undefined;
         const status = req.query.status as ("planned" | "reading" | "completed") | undefined;
         const genre = req.query.genre as string | undefined; // Add this line
+        const sortBy = req.query.sortBy as string | undefined; // Add sorting support
 
         const whereClauses = [];
         if (search) whereClauses.push(like(books.title, `%${search}%`));
@@ -40,12 +41,20 @@ export const getBooks = async (req: Request, res: Response) => {
             .where(whereCondition)
             .get();
 
-        const bookList = await db.select()
+        let query = db.select()
             .from(books)
             .where(whereCondition)
             .limit(limit)
-            .offset((page - 1) * limit)
-            .all();
+            .offset((page - 1) * limit);
+
+        // Add ordering if sortBy is provided
+        if (sortBy === 'completedDate') {
+            query = query.orderBy(desc(books.completedDate)) as any;
+        } else if (sortBy === 'createdAt') {
+            query = query.orderBy(desc(books.createdAt)) as any;
+        }
+
+        const bookList = await query.all();
 
         // Parse genres for each book
         const booksOut = bookList.map(b => ({ ...b, genres: parseGenresOut(b.genres) }));
