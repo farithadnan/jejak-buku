@@ -1,5 +1,5 @@
 {
-  "buildCommand": "if [ -d \"frontend\" ]; then cd frontend; fi && npm ci --legacy-peer-deps && npm run build",
+  "buildCommand": "npm ci --legacy-peer-deps --prefix frontend && npm run build --prefix frontend",
   "outputDirectory": "frontend/dist/frontend/browser",
   "installCommand": "echo 'Skipping root install'",
   "ignoreCommand": "bash -c 'exit 1'",
