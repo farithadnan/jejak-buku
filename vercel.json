@@ -1,6 +1,6 @@
 {
-  "buildCommand": "ls -la && cd frontend && npm install --legacy-peer-deps && npm run build",
-  "outputDirectory": "frontend/dist/frontend/browser",
+  "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "dist/frontend/browser",
   "installCommand": "echo 'Skipping root install'",
   "ignoreCommand": "bash -c 'exit 1'",
   "framework": null,
