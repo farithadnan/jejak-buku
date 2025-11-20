@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://192.168.0.2:5000/api'
+  // TODO: Update this to your actual backend URL after deploying backend
+  // For now, you can use Railway, Render, or another Node.js hosting service
+  apiUrl: 'https://your-backend-domain.com/api'
 };

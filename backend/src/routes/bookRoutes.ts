@@ -43,6 +43,7 @@ export const bookQuerySchema = z.object({
   search: z.string().optional(),
   status: z.enum(["planned", "reading", "completed"]).optional(),
   genre: z.string().optional(),
+  sortBy: z.enum(["completedDate", "createdAt"]).optional(),
 });
 
 // Route Handlers pointed to controller functions

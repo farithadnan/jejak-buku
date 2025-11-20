@@ -45,6 +45,7 @@ export class BookService {
     search?: string;
     status?: 'planned' | 'reading' | 'completed';
     genre?: string;
+    sortBy?: 'completedDate' | 'createdAt';
   }): Observable<BookListResponse> {
     this.loadingService.show();
 
@@ -57,6 +58,23 @@ export class BookService {
 
     return this.http.get<BookListResponse>(this.apiUrl, { params: httpParams })
       .pipe(finalize(() => this.loadingService.hide()));
+  }
+
+  getRecentlyCompleted(limit: number = 10): Observable<BookListResponse> {
+    return this.getBooks({
+      status: 'completed',
+      sortBy: 'completedDate',
+      limit,
+      page: 1
+    });
+  }
+
+  getCurrentlyReading(): Observable<BookListResponse> {
+    return this.getBooks({
+      status: 'reading',
+      limit: 100, // Get all currently reading books
+      page: 1
+    });
   }
 
   getBookById(id: number): Observable<Book> {

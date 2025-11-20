@@ -15,13 +15,28 @@ describe('BookTrackerComponent', () => {
 
   beforeEach(async () => {
     bookServiceSpy = jasmine.createSpyObj('BookService', [
-      'getBooks', 'createBook', 'updateBook', 'deleteBook'
+      'getBooks', 'createBook', 'updateBook', 'deleteBook', 'getRecentlyCompleted', 'getCurrentlyReading'
     ]);
     toastrSpy = jasmine.createSpyObj('ToastrService', ['success', 'error']);
     storageSpy = jasmine.createSpyObj('StorageService', ['getItem', 'setItem']);
 
     // Set default return value for getBooks
     bookServiceSpy.getBooks.and.returnValue(of({
+      books: [],
+      totalBooks: 0,
+      totalPages: 1,
+      currentPage: 1
+    }));
+
+    // Set default return values for dashboard methods
+    bookServiceSpy.getRecentlyCompleted.and.returnValue(of({
+      books: [],
+      totalBooks: 0,
+      totalPages: 1,
+      currentPage: 1
+    }));
+
+    bookServiceSpy.getCurrentlyReading.and.returnValue(of({
       books: [],
       totalBooks: 0,
       totalPages: 1,

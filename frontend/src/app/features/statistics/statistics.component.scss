@@ -1,0 +1,344 @@
+.statistics-container {
+  min-height: 60vh;
+}
+
+// 📊 SUMMARY CARDS
+.stat-card {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  cursor: default;
+
+  &:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+  }
+
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+}
+
+.stat-icon {
+  font-size: 1.875rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+
+  @media (min-width: 640px) {
+    font-size: 2.25rem;
+  }
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+
+  @media (min-width: 640px) {
+    font-size: 1.875rem;
+  }
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  font-weight: 500;
+
+  @media (min-width: 640px) {
+    font-size: 0.875rem;
+  }
+}
+
+// 📈 CHART CARDS
+.chart-card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// STATUS BREAKDOWN
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+}
+
+.status-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.status-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 1.5rem;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: all 0.5s ease-out;
+  border-radius: 9999px;
+}
+
+.status-percent {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #374151;
+  min-width: 45px;
+  text-align: right;
+}
+
+// MONTHLY TREND CHART
+.monthly-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 12rem;
+  margin-top: 1rem;
+}
+
+.month-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.month-bar-wrapper {
+  width: 100%;
+  height: 8rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.month-bar {
+  width: 100%;
+  max-width: 40px;
+  border-radius: 0.5rem 0.5rem 0 0;
+  transition: all 0.5s ease-out;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  min-height: 4px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.month-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.month-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+// 🎯 DETAIL CARDS
+.detail-card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+}
+
+.detail-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+// GENRE BREAKDOWN
+.genre-row {
+  margin-bottom: 0.75rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.genre-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.genre-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.genre-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.genre-bar-container {
+  height: 0.75rem;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.genre-bar {
+  height: 100%;
+  transition: all 0.5s ease-out;
+  border-radius: 9999px;
+  min-width: 10%;
+}
+
+// PROGRESS ITEMS
+.progress-item {
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.progress-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.progress-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+// INSIGHT BOX
+.insight-box {
+  padding: 1rem;
+  background-color: #eff6ff;
+  border-radius: 0.5rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  border: 1px solid #dbeafe;
+}
+
+.insight-icon {
+  font-size: 1.5rem;
+}
+
+.insight-text {
+  flex: 1;
+}
+
+// EMPTY STATE
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.empty-icon {
+  font-size: 3.75rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.empty-text {
+  color: #6b7280;
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  padding: 1rem 0;
+}
+
+// RESPONSIVE ADJUSTMENTS
+@media (max-width: 640px) {
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .chart-card, .detail-card {
+    padding: 1rem;
+  }
+
+  .monthly-chart {
+    height: 10rem;
+  }
+
+  .month-bar-wrapper {
+    height: 6rem;
+  }
+
+  .month-label {
+    font-size: 0.625rem;
+  }
+}
